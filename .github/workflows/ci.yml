@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [AuthService, CatalogService, InventoryService, NotificationService, OrderService, BFFService]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build ${{ matrix.service }}
+        working-directory: ./${{ matrix.service }}
+        run: ./gradlew build --no-daemon
+
+      - name: Run tests for ${{ matrix.service }}
+        working-directory: ./${{ matrix.service }}
+        run: ./gradlew test --no-daemon
+
+      - name: Lint code for ${{ matrix.service }}
+        working-directory: ./${{ matrix.service }}
+        run: |
+          ./gradlew check --no-daemon
