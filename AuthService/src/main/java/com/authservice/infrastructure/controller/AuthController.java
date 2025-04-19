@@ -42,13 +42,10 @@ public class AuthController {
                 command.getEmail(), command.getPassword());
         authManager.authenticate(authToken);  // rzuci wyjątek, jeśli nieprawidłowe
 
-        // 2. jeżeli chcesz zwrócić ID, wyciągnij je z repozytorium:
         UUID userId = loginHandler.handle(command);
 
-        // 3. wygeneruj token JWT (przykład poniżej)
         String jwt = generateJwtToken(authToken);
 
-        // 4. zwróć JSON z tokenem i opcjonalnie ID
         Map<String,Object> body = Map.of(
                 "access_token", jwt,
                 "token_type", "Bearer",
