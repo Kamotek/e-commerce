@@ -11,4 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RemoveStockCommand { private UUID productId; private int amount; }
+public class RemoveStockCommand {
+    private UUID productId;
+    private int amount;
+}
