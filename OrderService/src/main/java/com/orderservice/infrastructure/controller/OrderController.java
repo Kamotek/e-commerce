@@ -33,7 +33,7 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrder(@PathVariable UUID orderId) {
-        return orderRepository.findByOrderId(orderId.toString())
+        return orderRepository.findByOrderId(orderId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -1,0 +1,19 @@
+package com.notificationservice.infrastructure.messaging.consumer;
+
+import com.notificationservice.application.command.model.CreateNotificationCommand;
+import com.notificationservice.application.command.handler.CreateNotificationCommandHandler;
+import com.notificationservice.infrastructure.configuration.RabbitMQConfig;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class NotificationListener {
+    private final CreateNotificationCommandHandler handler;
+
+    @RabbitListener(queues = RabbitMQConfig.CREATE_QUEUE)
+    public void onCreateNotification(CreateNotificationCommand cmd) {
+        handler.handle(cmd);
+    }
+}
