@@ -40,8 +40,8 @@ public class SpringDataOrderRepository implements OrderRepository {
     }
 
     @Override
-    public Optional<Order> findByOrderId(String orderId) {
-        return jpa.findById(UUID.fromString(orderId))
+    public Optional<Order> findByOrderId(UUID orderId) {
+        return jpa.findById(orderId)
                 .map(mapper::toDomain);
     }
 
