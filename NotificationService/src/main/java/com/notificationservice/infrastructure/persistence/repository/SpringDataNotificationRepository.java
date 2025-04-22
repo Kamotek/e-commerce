@@ -15,46 +15,45 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class SpringDataNotificationRepository implements NotificationRepository {
-    private final NotificationJpaRepository notificationJpaRepository;
-    private final NotificationMapper notificationMapper;
+    private final NotificationJpaRepository jpa;
+    private final NotificationMapper mapper;
 
     @Override
     public Notification createNotification(Notification notification) {
-        NotificationEntity entity = NotificationEntity.builder()
-                .notificationId(UUID.randomUUID())
-                .userEmail(notification.getUserEmail())
-                .title(notification.getTitle())
-                .body(notification.getBody())
-                .build();
-        notificationJpaRepository.save(entity);
-        return notification;
+        NotificationEntity entity = mapper.toEntity(notification);
+        NotificationEntity saved   = jpa.save(entity);
+        return mapper.toDomain(saved);
     }
 
     @Override
     public Notification updateNotification(Notification notification) {
-        NotificationEntity entity = notificationJpaRepository.findById(notification.getNotificationId()).orElse(null);
-        entity.setTitle(notification.getTitle());
-        entity.setBody(notification.getBody());
-        notificationJpaRepository.save(entity);
-        return notification;
+        UUID id = notification.getNotificationId();
+        NotificationEntity existing = jpa.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No notification with id " + id));
+
+        existing.setTitle(notification.getTitle());
+        existing.setBody(notification.getBody());
+        NotificationEntity saved = jpa.save(existing);
+        return mapper.toDomain(saved);
     }
 
     @Override
     public void deleteNotification(UUID notificationId) {
-        notificationJpaRepository.delete(notificationJpaRepository.findById(notificationId).orElse(null));
+        if (!jpa.existsById(notificationId)) {
+            throw new IllegalArgumentException("No notification with id " + notificationId);
+        }
+        jpa.deleteById(notificationId);
     }
 
     @Override
     public Optional<Notification> findByNotificationId(UUID notificationId) {
-        return notificationJpaRepository.findById(notificationId).map(notificationMapper::toDomain);
+        return jpa.findById(notificationId).map(mapper::toDomain);
     }
 
     @Override
     public List<Notification> findAllNotifications() {
-        return notificationJpaRepository.findAll().stream()
-                .map(notificationMapper::toDomain)
+        return jpa.findAll().stream()
+                .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
-
-
 }
