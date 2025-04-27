@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 @SpringBootApplication
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class WelcomeNotificationServiceApplication {
 
     public static void main(String[] args) {
