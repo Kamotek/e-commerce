@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import static com.inventoryservice.infrastructure.configuration.RabbitMQConfig.EXCHANGE;
+import static com.inventoryservice.infrastructure.configuration.RabbitMQConfig.INVENTORY_EXCHANGE;
 import static com.inventoryservice.infrastructure.configuration.RabbitMQConfig.REMOVE_KEY;
 
 @Service
@@ -14,6 +14,7 @@ public class StockRemovedPublisher {
     private final RabbitTemplate rabbitTemplate;
 
     public void publish(RemoveStockCommand command) {
-        rabbitTemplate.convertAndSend(EXCHANGE, REMOVE_KEY, command);
+
+        rabbitTemplate.convertAndSend(INVENTORY_EXCHANGE, REMOVE_KEY, command);
     }
 }

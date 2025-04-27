@@ -8,9 +8,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface StockItemMapper {
-    StockItemDto toDto(StockItemEntity entity);
-
     StockItemDto toDto(StockItem model);
-
-    StockItemEntity toEntity(StockItemDto dto);
 }

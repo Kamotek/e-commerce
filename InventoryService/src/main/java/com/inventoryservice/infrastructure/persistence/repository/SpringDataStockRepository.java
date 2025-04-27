@@ -37,6 +37,7 @@ public class SpringDataStockRepository implements StockRepository {
         entity.setCategory(item.getCategory());
         entity.setDescription(item.getDescription());
         entity.setQuantity(item.getQuantity());
+        entity.setPrice(item.getPrice());
         StockItemEntity saved = jpa.save(entity);
         return mapToDomain(saved);
     }
