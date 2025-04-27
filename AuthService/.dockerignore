@@ -1,0 +1,10 @@
+.gradle
+build
+out
+bin
+.idea
+*.iml
+*.log
+.git
+.gitignore
+target

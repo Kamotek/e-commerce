@@ -1,0 +1,19 @@
+services:
+  payment-service:
+    build: .
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_payment_db
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - db
+      - rabbitmq
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: e_commerce_payment_db
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_payment_data:/var/lib/postgresql/data

@@ -1,13 +1,16 @@
 version: '3.8'
 
 services:
-  auth-service:
+  bff-service:
     build: .
     ports:
-      - "8080:8080"
+      - "8085:8085"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_auth_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_bff_db
       - SPRING_RABBITMQ_HOST=rabbitmq
+      - AUTH_SERVICE_URL=http://auth-service:8080
+      - CATALOG_SERVICE_URL=http://catalog-service:8081
+      - ORDER_SERVICE_URL=http://order-service:8083
     depends_on:
       - db
       - rabbitmq
@@ -15,12 +18,12 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: e_commerce_auth_db
+      POSTGRES_DB: e_commerce_bff_db
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
-      - postgres_auth_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -29,4 +32,4 @@ services:
       - "15672:15672"
 
 volumes:
-  postgres_auth_data:
+  postgres_data:

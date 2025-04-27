@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  auth-service:
+  notification-service:
     build: .
     ports:
-      - "8080:8080"
+      - "8084:8084"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_auth_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_notification_db
       - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       - db
@@ -15,12 +15,12 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: e_commerce_auth_db
+      POSTGRES_DB: e_commerce_notification_db
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
-      - postgres_auth_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -29,4 +29,4 @@ services:
       - "15672:15672"
 
 volumes:
-  postgres_auth_data:
+  postgres_data:
