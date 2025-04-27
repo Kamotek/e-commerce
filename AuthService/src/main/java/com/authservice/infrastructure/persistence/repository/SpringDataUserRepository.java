@@ -3,7 +3,7 @@ package com.authservice.infrastructure.persistence.repository;
 import com.authservice.domain.model.User;
 import com.authservice.domain.repository.UserRepository;
 import com.authservice.infrastructure.persistence.entity.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,14 +12,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
+@RequiredArgsConstructor
 public class SpringDataUserRepository implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
-
-    @Autowired
-    public SpringDataUserRepository(UserJpaRepository userJpaRepository) {
-        this.userJpaRepository = userJpaRepository;
-    }
 
     @Override
     public void save(User user) {
@@ -28,7 +24,8 @@ public class SpringDataUserRepository implements UserRepository {
                 user.getEmail(),
                 user.getPassword(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.getCreatedAt()
         );
         userJpaRepository.save(entity);
     }
@@ -36,38 +33,30 @@ public class SpringDataUserRepository implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return userJpaRepository.findByEmail(email)
-                .map(entity -> new User(
-                        entity.getId(),
-                        entity.getEmail(),
-                        entity.getPassword(),
-                        entity.getFirstName(),
-                        entity.getLastName()
-                ));
+                .map(this::toDomain);
     }
 
     @Override
     public Optional<User> findById(UUID id) {
         return userJpaRepository.findById(id)
-                .map(entity -> new User(
-                        entity.getId(),
-                        entity.getEmail(),
-                        entity.getPassword(),
-                        entity.getFirstName(),
-                        entity.getLastName()
-                ));
+                .map(this::toDomain);
     }
 
     @Override
     public List<User> findAll() {
-        return userJpaRepository.findAll().stream().map(
-                entity -> new User(
-                        entity.getId(),
-                        entity.getEmail(),
-                        entity.getPassword(),
-                        entity.getFirstName(),
-                        entity.getLastName()))
+        return userJpaRepository.findAll().stream()
+                .map(this::toDomain)
                 .collect(Collectors.toList());
-
     }
 
+    private User toDomain(UserEntity e) {
+        return User.builder()
+                .id(e.getId())
+                .email(e.getEmail())
+                .password(e.getPassword())
+                .firstName(e.getFirstName())
+                .lastName(e.getLastName())
+                .createdAt(e.getCreatedAt())
+                .build();
+    }
 }
