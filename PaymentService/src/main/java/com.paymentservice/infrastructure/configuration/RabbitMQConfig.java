@@ -1,0 +1,80 @@
+package com.paymentservice.infrastructure.configuration;
+
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+
+@EnableRabbit
+@Configuration
+public class RabbitMQConfig {
+    public static final String ORDER_EXCHANGE = "orders.exchange";
+    public static final String ORDER_QUEUE    = "payment.orders.create.queue";
+    public static final String ORDER_KEY      = "orders.create";
+
+    public static final String PAYMENT_EXCHANGE = "payments.exchange";
+    public static final String PAYMENT_QUEUE = "payments.submitted.queue";
+    public static final String PAYMENT_ROUTING_KEY = "payments.submitted";
+
+    @Bean
+    public TopicExchange paymentExchange() {
+        return new TopicExchange(PAYMENT_EXCHANGE);
+    }
+
+    @Bean
+    public Queue paymentQueue() {
+        return new Queue(PAYMENT_QUEUE, true);
+    }
+
+    @Bean
+    public Binding paymentBinding(Queue paymentQueue, TopicExchange paymentExchange) {
+        return BindingBuilder.bind(paymentQueue)
+                .to(paymentExchange)
+                .with(PAYMENT_ROUTING_KEY);
+    }
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory cf) {
+        return new RabbitAdmin(cf);
+    }
+
+    @Bean Queue orderQueue() {
+        return new Queue(ORDER_QUEUE, true);
+    }
+
+    @Bean TopicExchange orderExchange() {
+        return new TopicExchange(ORDER_EXCHANGE);
+    }
+
+    @Bean Binding orderBinding(Queue orderQueue, TopicExchange orderExchange) {
+        return BindingBuilder.bind(orderQueue).to(orderExchange).with(ORDER_KEY);
+    }
+
+    @Bean Jackson2JsonMessageConverter converter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean RabbitTemplate rabbitTemplate(ConnectionFactory cf,
+                                        Jackson2JsonMessageConverter conv) {
+        RabbitTemplate tpl = new RabbitTemplate(cf);
+        tpl.setMessageConverter(conv);
+        return tpl;
+    }
+
+    @Bean
+    @DependsOn("rabbitAdmin")
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            ConnectionFactory cf,
+            Jackson2JsonMessageConverter conv
+    ) {
+        SimpleRabbitListenerContainerFactory f = new SimpleRabbitListenerContainerFactory();
+        f.setConnectionFactory(cf);
+        f.setMessageConverter(conv);
+        return f;
+    }
+}
