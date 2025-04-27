@@ -1,0 +1,22 @@
+services:
+  welcome-notification-service:
+    build: .
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_welcomenotification_db
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - db
+      - rabbitmq
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: e_commerce_welcomenotification_db
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_welcome_notification_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_welcome_notification_data:
