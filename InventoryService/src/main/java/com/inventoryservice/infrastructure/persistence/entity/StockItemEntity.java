@@ -21,6 +21,8 @@ public class StockItemEntity {
     @Column(nullable = false)
     private int quantity;
     @Column(nullable = false)
+    private float price;
+    @Column(nullable = false)
     private Instant createdAt;
     @Column(nullable = false)
     private Instant updatedAt;

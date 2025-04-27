@@ -3,7 +3,6 @@ package com.bffservice.interfaces.rest;
 
 import com.bffservice.application.command.model.CreateOrderCommand;
 import com.bffservice.domain.model.Order;
-import com.bffservice.domain.model.OrderItem;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

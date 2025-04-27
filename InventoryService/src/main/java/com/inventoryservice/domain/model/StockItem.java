@@ -11,6 +11,7 @@ public class StockItem {
     private String category;
     private String description;
     private int quantity;
+    private float price;
     private Instant createdAt;
     private Instant updatedAt;
 }

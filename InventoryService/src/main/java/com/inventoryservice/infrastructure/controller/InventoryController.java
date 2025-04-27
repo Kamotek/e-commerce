@@ -14,12 +14,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/inventory")
 @RequiredArgsConstructor
@@ -72,6 +75,7 @@ public class InventoryController {
     public ResponseEntity<Void> addStock(
             @PathVariable UUID productId,
             @RequestParam int amount) {
+        log.info("Dziala");
         addHandler.handle(new AddStockCommand(productId, amount));
         return ResponseEntity.ok().build();
     }

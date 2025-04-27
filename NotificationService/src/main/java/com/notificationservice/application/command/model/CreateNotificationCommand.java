@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CreateNotificationCommand {
-    @Email @NotBlank
+    @NotBlank
     private String userEmail;
 
     @NotBlank
