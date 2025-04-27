@@ -20,6 +20,7 @@ public class OrderCreatedListener {
 
     @RabbitListener(queues = RabbitMQConfig.ORDER_QUEUE)
     public void onOrderCreated(CreateOrderEvent event) {
+        log.info("Received order created event: {}", event);
         notificationRepository.createNotification(new Notification(
                 UUID.randomUUID(),
                 "USEREMAIL",

@@ -6,6 +6,7 @@ import com.authservice.application.command.model.LoginUserCommand;
 import com.authservice.application.command.model.RegisterUserCommand;
 import com.authservice.domain.model.User;
 import com.authservice.domain.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -33,7 +35,8 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterUserCommand command) {
         registerHandler.handle(command);
-        return ResponseEntity.ok("Rejestracja przebiegła pomyślnie");
+        log.info("User registered");
+        return ResponseEntity.ok("User registered");
     }
 
     @PostMapping("/login")
@@ -52,21 +55,13 @@ public class AuthController {
                 "expires_in", 3600,
                 "userId", userId
         );
+        log.info("User logged in");
         return ResponseEntity.ok(body);
-    }
-
-    @GetMapping("/register")
-    public ResponseEntity<Void> registerForm() {
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<Void> loginForm() {
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
+        log.info("Get all users");
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
@@ -74,6 +69,7 @@ public class AuthController {
 
     private String generateJwtToken(UsernamePasswordAuthenticationToken auth) {
         // TODO
+        log.info("Generate JWT token");
         return "...";
     }
 }

@@ -33,7 +33,7 @@ public class CreateNotificationCommandHandler {
                 .createdAt(Instant.now())
                 .build();
 
-        publisher.publish(evt);   // <-- tu już event, nie cmd
+        publisher.publish(evt);
         return saved;
     }
 }

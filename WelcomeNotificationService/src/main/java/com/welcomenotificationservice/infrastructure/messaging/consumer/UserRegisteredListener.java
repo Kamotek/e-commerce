@@ -17,8 +17,7 @@ public class UserRegisteredListener {
 
     @RabbitListener(queues = RabbitMQConfig.WELCOME_QUEUE)
     public void onUserRegistered(UserRegisteredEvent evt) {
-        log.info("Otrzymano UserRegisteredEvent dla userId={}", evt.getUserId());
-
+        log.info("Received user registered event: {}", evt);
         CreateWelcomeNotificationCommand cmd = CreateWelcomeNotificationCommand.builder()
                 .userId(evt.getUserId())
                 .email(evt.getEmail())
@@ -27,6 +26,6 @@ public class UserRegisteredListener {
                 .build();
 
         handler.handle(cmd);
-        log.info("WelcomeNotification utworzony dla userId={}", evt.getUserId());
+        log.info("Welcome event received: {}", evt);
     }
 }

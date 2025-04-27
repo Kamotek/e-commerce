@@ -1,11 +1,13 @@
 package com.catalogservice.infrastructure.messaging.consumer;
 
 import com.catalogservice.infrastructure.configuration.RabbitMQConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Slf4j
 @Component
 public class CreateProductListener {
     @RabbitListener(queues = RabbitMQConfig.CREATE_QUEUE_NAME)
@@ -15,6 +17,6 @@ public class CreateProductListener {
         String productDescription = (String) payload.get("productDescription");
         String productPrice = (String) payload.get("productPrice");
 
-        System.out.println("Odebrano komunikat tworzenia produktu w katalogu");
+        log.info("Product created: {}", productId);
     }
 }

@@ -36,7 +36,6 @@ public class LoginUserCommandHandler {
             return null;
         }
 
-        // budujemy event i publikujemy
         UserLoggedInEvent evt = UserLoggedInEvent.builder()
                 .userId(user.getId())
                 .loginAt(Instant.now())
