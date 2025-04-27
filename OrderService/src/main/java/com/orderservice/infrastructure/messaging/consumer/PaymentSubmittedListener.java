@@ -12,8 +12,6 @@ public class PaymentSubmittedListener {
 
     @RabbitListener(queues = RabbitMQConfig.PAYMENT_SUBMITTED_QUEUE)
     public void onPaymentSubmitted(PaymentSubmittedEvent event) {
-        log.info("Otrzymano PaymentSubmittedEvent dla paymentId={} at {}",
-                event.getPaymentId(), event.getCreatedAt());
-
+        log.info("Received Payment Submitted Event {} at {}", event, event.getCreatedAt());
     }
 }

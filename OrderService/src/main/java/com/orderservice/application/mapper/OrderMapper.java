@@ -44,20 +44,4 @@ public interface OrderMapper {
                 })
                 .toList();
     }
-
-    @AfterMapping
-    default void linkItems(@MappingTarget OrderEntity entity) {
-        if (entity.getItems() != null) {
-            entity.getItems().forEach(i -> i.setOrder(entity));
-        }
-    }
-
-
-    @Mapping(target = "id",
-            expression = "java(java.util.UUID.randomUUID())")
-    @Mapping(target = "userId",      source = "userId")
-    @Mapping(target = "orderDate",   source = "orderDate", defaultExpression = "java(java.time.Instant.now())")
-    @Mapping(target = "finished",    constant = "false")
-    @Mapping(target = "items",       source = "items")
-    Order toDomain(CreateOrderCommand command);
 }

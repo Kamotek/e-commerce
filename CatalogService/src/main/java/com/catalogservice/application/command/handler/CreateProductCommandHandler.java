@@ -4,10 +4,12 @@ import com.catalogservice.application.command.model.CreateProductCommand;
 import com.catalogservice.domain.model.Product;
 import com.catalogservice.domain.repository.ProductRepository;
 import com.catalogservice.infrastructure.messaging.producer.CreateProductPublisher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class CreateProductCommandHandler {
     private final ProductRepository productRepository;

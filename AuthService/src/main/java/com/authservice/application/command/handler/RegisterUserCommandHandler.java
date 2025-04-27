@@ -37,7 +37,6 @@ public class RegisterUserCommandHandler {
                 .build();
         userRepository.save(user);
 
-        // budujemy event i publikujemy
         UserRegisteredEvent evt = UserRegisteredEvent.builder()
                 .userId(user.getId())
                 .email(user.getEmail())

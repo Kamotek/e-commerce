@@ -21,7 +21,6 @@ public class CreateOrderCommandHandler {
     private final OrderPublisher orderPublisher;
 
     public Order handle(CreateOrderCommand command) {
-        // 1) Zbuduj domain Order
         List<OrderItem> items = command.getItems().stream()
                 .map(i -> OrderItem.builder()
                         .productId(i.getProductId())
@@ -41,10 +40,8 @@ public class CreateOrderCommandHandler {
                 .finished(false)
                 .build();
 
-        // 2) Zapisz zamówienie w repozytorium
         orderRepository.createOrder(order);
 
-        // 3) Zbuduj i wyślij event CreateOrderEvent
         CreateOrderEvent event = CreateOrderEvent.builder()
                 .orderId(order.getId())
                 .userId(order.getUserId())

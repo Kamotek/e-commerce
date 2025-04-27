@@ -11,15 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-@EnableRabbit   // <- konieczne
+@EnableRabbit
 @Configuration
 public class RabbitMQConfig {
-    // exchange + queue dla powiadomień (na przyszłość)
     public static final String EXCHANGE       = "notifications.exchange";
     public static final String CREATE_QUEUE   = "notifications.create.queue";
     public static final String CREATE_ROUTING = "notifications.create";
 
-    // exchange + queue do obsługi eventów z OrderService
     public static final String ORDER_EXCHANGE = "orders.exchange";
     public static final String ORDER_QUEUE    = "notification.orders.create.queue";
     public static final String ORDER_KEY      = "orders.create";
@@ -29,7 +27,6 @@ public class RabbitMQConfig {
     public RabbitAdmin rabbitAdmin(ConnectionFactory cf) {
         return new RabbitAdmin(cf);
     }
-    // 1) kolejka na powiadomienia (nieużywana w listenerze orderów)
     @Bean Queue notificationQueue() {
         return new Queue(CREATE_QUEUE, true);
     }
@@ -44,7 +41,6 @@ public class RabbitMQConfig {
                 .with(CREATE_ROUTING);
     }
 
-    // 2) exchange/queue binding dla OrderService eventów
     @Bean
     public TopicExchange orderExchange() {
         return new TopicExchange(ORDER_EXCHANGE);
@@ -62,13 +58,11 @@ public class RabbitMQConfig {
                 .with(ORDER_KEY);
     }
 
-    // 3) wspólny JSON converter
     @Bean
     public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
-    // 4) RabbitTemplate z konwerterem
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory cf,
                                          Jackson2JsonMessageConverter conv) {
@@ -77,9 +71,8 @@ public class RabbitMQConfig {
         return tpl;
     }
 
-    // 5) fabryka listenerów z JSON converterem
     @Bean
-    @DependsOn("rabbitAdmin")    // <- listener wystartuje po adminie
+    @DependsOn("rabbitAdmin")
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory cf,
             Jackson2JsonMessageConverter conv

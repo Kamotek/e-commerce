@@ -12,11 +12,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationListener {
-    private final CreateNotificationCommandHandler handler;
-
     @RabbitListener(queues = RabbitMQConfig.CREATE_QUEUE)
     public void onCreateNotification(CreateNotificationCommand cmd) {
-       // handler.handle(cmd);
-        log.info("Nasluch udany!");
+        log.info("Received CreateNotificationCommand: {}", cmd);
     }
 }
