@@ -1,6 +1,6 @@
 package com.orderservice.infrastructure.messaging.producer;
 
-import com.orderservice.application.command.model.CreateOrderCommand;
+import com.orderservice.application.command.model.CreateOrderEvent;
 import com.orderservice.infrastructure.configuration.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 public class OrderPublisher {
     private final RabbitTemplate rabbitTemplate;
 
-    public void publishCreateOrder(CreateOrderCommand cmd) {
+    public void publishCreateOrder(CreateOrderEvent event) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.ORDER_EXCHANGE,
                 RabbitMQConfig.ORDER_KEY,
-                cmd
+                event
         );
     }
 }
-
