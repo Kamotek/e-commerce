@@ -1,17 +1,9 @@
 package com.authservice.infrastructure.persistence.entity;
 
+import jakarta.persistence.*;
+import lombok.*;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-
+import java.time.Instant;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -19,10 +11,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class UserEntity {
     @Id
-    @Column(name="id", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(unique = true, nullable = false)
@@ -36,4 +28,12 @@ public class UserEntity {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+    }
 }

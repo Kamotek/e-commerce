@@ -1,7 +1,7 @@
 package com.orderservice.application.command.handler;
 
 import com.orderservice.application.command.model.CreateOrderCommand;
-import com.orderservice.application.mapper.OrderMapper;
+import com.orderservice.application.command.model.CreateOrderEvent;
 import com.orderservice.domain.model.Order;
 import com.orderservice.domain.model.OrderItem;
 import com.orderservice.domain.repository.OrderRepository;
@@ -12,19 +12,20 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class CreateOrderCommandHandler {
 
     private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
     private final OrderPublisher orderPublisher;
 
     public Order handle(CreateOrderCommand command) {
+        // 1) Zbuduj domain Order
         List<OrderItem> items = command.getItems().stream()
-                .map(item -> OrderItem.builder()
-                        .productId(item.getProductId())
-                        .quantity(item.getQuantity())
+                .map(i -> OrderItem.builder()
+                        .productId(i.getProductId())
+                        .quantity(i.getQuantity())
                         .build())
                 .toList();
 
@@ -40,7 +41,24 @@ public class CreateOrderCommandHandler {
                 .finished(false)
                 .build();
 
-        orderPublisher.publishCreateOrder(command);
-        return orderRepository.createOrder(order);
+        // 2) Zapisz zamówienie w repozytorium
+        orderRepository.createOrder(order);
+
+        // 3) Zbuduj i wyślij event CreateOrderEvent
+        CreateOrderEvent event = CreateOrderEvent.builder()
+                .orderId(order.getId())
+                .userId(order.getUserId())
+                .orderDate(order.getOrderDate())
+                .items(items.stream()
+                        .map(i -> CreateOrderEvent.OrderItem.builder()
+                                .productId(i.getProductId())
+                                .quantity(i.getQuantity())
+                                .build())
+                        .toList())
+                .build();
+
+        orderPublisher.publishCreateOrder(event);
+
+        return order;
     }
 }

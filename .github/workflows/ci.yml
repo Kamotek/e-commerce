@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [AuthService, CatalogService, InventoryService, NotificationService, OrderService, BFFService]
+        service: [AuthService, CatalogService, InventoryService, NotificationService, OrderService, BFFService, PaymentService, WelcomeNotificationService]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

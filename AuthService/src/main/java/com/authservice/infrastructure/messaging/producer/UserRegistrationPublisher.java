@@ -1,23 +1,21 @@
 package com.authservice.infrastructure.messaging.producer;
 
-import com.authservice.application.command.model.RegisterUserCommand;
+import com.authservice.application.command.model.UserRegisteredEvent;
 import com.authservice.infrastructure.configuration.RabbitMQConfig;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserRegistrationPublisher {
     private final RabbitTemplate rabbitTemplate;
 
-    public UserRegistrationPublisher(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
-
-    public void publish(RegisterUserCommand command){
+    public void publish(UserRegisteredEvent evt) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.USER_REG_EXCHANGE,
                 RabbitMQConfig.USER_REG_ROUTING,
-                command
+                evt
         );
     }
 }

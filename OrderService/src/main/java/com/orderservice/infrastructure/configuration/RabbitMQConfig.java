@@ -19,8 +19,34 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String ORDER_EXCHANGE = "orders.exchange";
-    public static final String ORDER_QUEUE    = "orders.create.queue";
+    public static final String NOTIFICATION_ORDER_QUEUE    = "notification.orders.create.queue";
+    public static final String INVENTORY_ORDER_QUEUE    = "inventory.orders.create.queue";
+    public static final String PAYMENT_ORDER_QUEUE    = "payment.orders.create.queue";
     public static final String ORDER_KEY      = "orders.create";
+
+    public static final String PAYMENT_EXCHANGE           = "payments.exchange";
+    public static final String PAYMENT_SUBMITTED_QUEUE    = "orders.payment.submitted.queue";
+    public static final String PAYMENT_SUBMITTED_ROUTING  = "payments.submitted";
+
+    @Bean
+    public TopicExchange paymentExchange() {
+        return new TopicExchange(PAYMENT_EXCHANGE);
+    }
+
+    @Bean
+    public Queue paymentSubmittedQueue() {
+        return new Queue(PAYMENT_SUBMITTED_QUEUE, true);
+    }
+
+    @Bean
+    public Binding paymentSubmittedBinding(Queue paymentSubmittedQueue,
+                                           TopicExchange paymentExchange) {
+        return BindingBuilder
+                .bind(paymentSubmittedQueue)
+                .to(paymentExchange)
+                .with(PAYMENT_SUBMITTED_ROUTING);
+    }
+
 
     // 1) Exchange typu Topic
     @Bean
@@ -31,7 +57,17 @@ public class RabbitMQConfig {
     // 2) Kolejka
     @Bean
     public Queue orderQueue() {
-        return new Queue(ORDER_QUEUE, true);
+        return new Queue(NOTIFICATION_ORDER_QUEUE, true);
+    }
+
+    @Bean
+    public Queue inventoryOrderQueue() {
+        return new Queue(INVENTORY_ORDER_QUEUE, true);
+    }
+
+    @Bean
+    public Queue paymentOrderQueue() {
+        return new Queue(PAYMENT_ORDER_QUEUE, true);
     }
 
     // 3) Binding (Exchange → Queue)

@@ -40,7 +40,7 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@RequestBody LoginUserCommand command) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 command.getEmail(), command.getPassword());
-        authManager.authenticate(authToken);  // rzuci wyjątek, jeśli nieprawidłowe
+        authManager.authenticate(authToken);
 
         UUID userId = loginHandler.handle(command);
 
