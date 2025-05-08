@@ -1,33 +1,31 @@
-FROM eclipse-temurin:17-jdk-jammy as builder
+# ----------------------------
+# 1. Build stage
+# ----------------------------
+FROM gradle:8-jdk17 AS builder
 
 WORKDIR /app
 
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
+# 1.1. Cache zależności
+COPY build.gradle settings.gradle gradle.* /app/
+COPY gradle /app/gradle
+RUN gradle dependencies --warning-mode=all && gradle clean
 
-RUN chmod +x gradlew && \
-    ./gradlew clean build --no-daemon -x test
+# 1.2. Kompilacja
+COPY src /app/src
+RUN gradle bootJar --warning-mode=all -x test
 
-FROM eclipse-temurin:17-jre-jammy
+# ----------------------------
+# 2. Run stage
+# ----------------------------
+FROM eclipse-temurin:17-jdk-jammy AS runtime
 
 WORKDIR /app
 
-COPY --from=builder /app/build/libs/PaymentService-*.jar app.jar
-RUN chmod 755 app.jar
+# kopiujemy fat-jar
+COPY --from=builder /app/build/libs/*.jar bff-service.jar
 
-ENV SPRING_PROFILES_ACTIVE=prod
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/e_commerce_payment_db
-ENV SPRING_DATASOURCE_USERNAME=postgres
-ENV SPRING_DATASOURCE_PASSWORD=postgres
-ENV SPRING_RABBITMQ_HOST=rabbitmq
-ENV SERVER_PORT=8086
-
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:8086/actuator/health || exit 1
-
+# expose port
 EXPOSE 8086
 
-ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+# entrypoint
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar bff-service.jar"]

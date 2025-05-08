@@ -1,5 +1,6 @@
 package com.bffservice.application.command.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,5 +26,6 @@ public class CreateOrderCommand {
     private List<CreateOrderItemCommand> items;
 
     @NotNull(message = "Order date must not be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant orderDate;
 }

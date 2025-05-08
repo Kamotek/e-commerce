@@ -1,0 +1,2 @@
+docker run -d   --name authservice   --network host   -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/e_commerce_auth_db   -e SPRING_DATASOURCE_USERNAME=postgres   -e SPRING_DATASOURCE_PASSWORD=postgres   -e SPRING_RABBITMQ_HOST=localhost   -e SPRING_RABBITMQ_PORT=5672   -e JAVA_OPTS=-Xms512m -Xmx1024m   authservice:latest
+
