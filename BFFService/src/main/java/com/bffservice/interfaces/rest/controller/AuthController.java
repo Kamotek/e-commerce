@@ -53,5 +53,4 @@ public class AuthController {
                 .status(resp.getStatusCode())
                 .body(resp.getBody());
     }
-
 }

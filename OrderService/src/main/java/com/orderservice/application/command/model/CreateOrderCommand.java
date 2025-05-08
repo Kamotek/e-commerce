@@ -1,5 +1,6 @@
 package com.orderservice.application.command.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class CreateOrderCommand {
     @NotEmpty(message = "Order must contain at least one item")
     private List<CreateOrderItemCommand> items;
 
-    @Valid
+    @NotNull(message = "Order date must not be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant orderDate;
 }

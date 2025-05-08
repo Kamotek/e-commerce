@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,47 +23,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // BFF jest stateless
-                .csrf(csrf -> csrf.disable())
+                // 1) Wyłącz CSRF i sesje
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // reguły dostępu
+
+                // 2) Zezwól zawsze na register/login/allUsers
                 .authorizeHttpRequests(auth -> auth
-                        // === AUTH endpoints (publiczne) ===
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/auth/register",
-                                "/api/auth/login"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/auth/allUsers"
-                        ).permitAll()
-
-                        // === CATALOG endpoints (publiczne) ===
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/catalog/products",
-                                "/api/catalog/products/**"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/catalog/products"
-                        ).permitAll()
-
-                        // === ORDERS endpoints (publiczne) ===
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/orders",
-                                "/api/orders/**"
-                        ).permitAll()
-
-                        // jeśli chcesz, żeby tworzenie/modyfikacja zamówień też było publiczne
-                        // możesz dodać POST/PUT/DELETE tutaj; w przeciwnym razie zostaną one chronione
-                         .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
-                         .requestMatchers(HttpMethod.PUT, "/api/orders/**").permitAll()
-                         .requestMatchers(HttpMethod.DELETE, "/api/orders/**").permitAll()
-
-                        // wszystkie inne żądania wymagają uwierzytelnienia
+                        // publiczne endpointy BFF:
+                        .requestMatchers(HttpMethod.POST,   "/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/api/auth/allUsers").permitAll()
+                        // publiczne katalog i zamówienia:
+                        .requestMatchers("/api/catalog/**").permitAll()
+                        .requestMatchers("/api/orders/**", "/api/orders").permitAll()
+                        // wszystkie pozostałe muszą być autoryzowane
                         .anyRequest().authenticated()
                 )
-                // JWT Resource Server
+
+                // 3) Teraz włącz JWT Resource Server
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
                 );
