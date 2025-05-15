@@ -17,6 +17,8 @@ public class StockItemEntity {
     @Column(nullable = false)
     private String category;
     @Column(nullable = false)
+    private String specification;
+    @Column(nullable = false)
     private String description;
     @Column(nullable = false)
     private int quantity;

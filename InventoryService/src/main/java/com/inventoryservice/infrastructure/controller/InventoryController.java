@@ -80,6 +80,11 @@ public class InventoryController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Void> add(@Valid @RequestBody AddStockCommand command) {
+
+    }
+
     @PostMapping("/stock/{productId}/remove")
     public ResponseEntity<Void> removeStock(
             @PathVariable UUID productId,

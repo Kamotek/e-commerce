@@ -1,11 +1,9 @@
-package com.inventoryservice.domain.model;
+package com.inventoryservice.application.command.model;
 
-import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
-@AllArgsConstructor @NoArgsConstructor @Getter @Setter @Builder
-public class StockItem {
+public class UpdateItemCommand {
     private UUID productId;
     private String name;
     private String category;
