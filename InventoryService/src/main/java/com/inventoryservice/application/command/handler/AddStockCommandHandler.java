@@ -14,6 +14,6 @@ public class AddStockCommandHandler {
 
     public void handle(AddStockCommand command) {
         repository.addStock(command.getProductId(), command.getAmount());
-        publisher.publish(command); // Publish event
+        publisher.publish(command);
     }
 }

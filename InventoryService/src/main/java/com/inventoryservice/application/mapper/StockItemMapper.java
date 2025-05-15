@@ -2,7 +2,6 @@
 package com.inventoryservice.application.mapper;
 
 import com.inventoryservice.domain.model.StockItem;
-import com.inventoryservice.infrastructure.persistence.entity.StockItemEntity;
 import com.inventoryservice.application.dto.StockItemDto;
 import org.mapstruct.Mapper;
 

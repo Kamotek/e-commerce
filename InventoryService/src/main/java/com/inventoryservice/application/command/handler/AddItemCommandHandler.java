@@ -4,10 +4,12 @@ import com.inventoryservice.application.command.model.AddItemCommand;
 import com.inventoryservice.domain.model.StockItem;
 import com.inventoryservice.domain.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@Service
 @RequiredArgsConstructor
 public class AddItemCommandHandler {
     private final StockRepository stockRepository;
