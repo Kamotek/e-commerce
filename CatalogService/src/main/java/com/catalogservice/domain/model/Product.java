@@ -7,21 +7,25 @@ import java.util.UUID;
 
 
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 public class Product {
     private UUID id;
     private String name;
+    private String specification;
     private String description;
     private BigDecimal price;
     private String category;
 
-    public Product(String name, String description, BigDecimal price, String category) {
+    public Product(String name, String specification, String description, BigDecimal price, String category) {
         this.id = UUID.randomUUID();
         this.name = name;
+        this.specification = specification;
         this.description = description;
         this.price = price;
         this.category = category;
     }
+
+
 }

@@ -27,6 +27,9 @@ public class ProductEntity {
     private String description;
 
     @Column(nullable = false)
+    private String specification;
+
+    @Column(nullable = false)
     private BigDecimal price;
 
     @Column(nullable = false)

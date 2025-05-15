@@ -23,6 +23,7 @@ public class CreateProductCommandHandler {
     public UUID handle(CreateProductCommand cmd) {
         Product product = new Product(
                 cmd.getName(),
+                cmd.getSpecification(),
                 cmd.getDescription(),
                 cmd.getPrice(),
                 cmd.getCategory()

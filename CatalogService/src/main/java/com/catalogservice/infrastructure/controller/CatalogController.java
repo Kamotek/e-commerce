@@ -48,7 +48,7 @@ public class CatalogController {
     public List<Product> getAll() {
         return readHandler.handleFindAll().stream()
                 .map(p -> new Product(
-                        p.getId(), p.getName(), p.getDescription(),
+                        p.getId(), p.getName(),p.getSpecification(), p.getDescription(),
                         p.getPrice(), p.getCategory()))
                 .collect(Collectors.toList());
     }
@@ -57,12 +57,12 @@ public class CatalogController {
     public ResponseEntity<Product> getById(@PathVariable UUID id) {
         return readHandler.handleFindById(id)
                 .map(p -> ResponseEntity.ok(new Product(
-                        p.getId(), p.getName(), p.getDescription(),
+                        p.getId(), p.getName(),p.getSpecification(), p.getDescription(),
                         p.getPrice(), p.getCategory())))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> updateProduct(@PathVariable UUID id,
                                               @RequestBody UpdateProductCommand cmd) {
         cmd.setId(id);

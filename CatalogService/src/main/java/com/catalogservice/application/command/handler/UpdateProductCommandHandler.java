@@ -23,6 +23,7 @@ public class UpdateProductCommandHandler {
         Product existing = productRepository.findById(cmd.getId())
                 .orElseThrow(() -> new NoSuchElementException("Product not found: " + cmd.getId()));
         existing.setName(cmd.getName());
+        existing.setSpecification(cmd.getSpecification());
         existing.setDescription(cmd.getDescription());
         existing.setPrice(cmd.getPrice());
         existing.setCategory(cmd.getCategory());

@@ -15,6 +15,7 @@ import java.util.UUID;
 public class UpdateProductCommand {
     private UUID id;
     private String name;
+    private String specification;
     private String description;
     private BigDecimal price;
     private String category;

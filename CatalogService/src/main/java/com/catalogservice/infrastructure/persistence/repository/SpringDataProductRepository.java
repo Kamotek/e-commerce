@@ -25,6 +25,7 @@ public class SpringDataProductRepository implements ProductRepository {
         ProductEntity entity = new ProductEntity(
                 product.getId(),
                 product.getName(),
+                product.getSpecification(),
                 product.getDescription(),
                 product.getPrice(),
                 product.getCategory()
@@ -38,6 +39,7 @@ public class SpringDataProductRepository implements ProductRepository {
                 .map(entity -> new Product(
                         entity.getId(),
                         entity.getName(),
+                        entity.getSpecification(),
                         entity.getDescription(),
                         entity.getPrice(),
                         entity.getCategory()
@@ -50,6 +52,7 @@ public class SpringDataProductRepository implements ProductRepository {
                 .map(entity -> new Product(
                         entity.getId(),
                         entity.getName(),
+                        entity.getSpecification(),
                         entity.getDescription(),
                         entity.getPrice(),
                         entity.getCategory()
@@ -62,6 +65,7 @@ public class SpringDataProductRepository implements ProductRepository {
                 entity -> new Product(
                         entity.getId(),
                         entity.getName(),
+                        entity.getSpecification(),
                         entity.getDescription(),
                         entity.getPrice(),
                         entity.getCategory()))
