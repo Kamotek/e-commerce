@@ -15,8 +15,17 @@ import java.util.UUID;
 public class UpdateProductCommand {
     private UUID id;
     private String name;
-    private String specification;
     private String description;
     private BigDecimal price;
+    private BigDecimal originalPrice;
     private String category;
+    private Integer inventory;
+    private String status;
+    private String brand;
+    private String badge;
+    private Double rating;
+    private Integer reviewCount;
+
+    private String specificationsJson;
+    private String imageUrlsJson;
 }
