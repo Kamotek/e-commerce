@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -23,29 +28,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1) Wyłącz CSRF i sesje
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // 2) Zezwól zawsze na register/login/allUsers
+                // najpierw odblokuj preflight
                 .authorizeHttpRequests(auth -> auth
-                        // publiczne endpointy BFF:
-                        .requestMatchers(HttpMethod.POST,   "/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET,    "/api/auth/allUsers").permitAll()
-                        // publiczne katalog i zamówienia:
-                        .requestMatchers("/api/catalog/**").permitAll()
-                        .requestMatchers("/api/orders/**", "/api/orders").permitAll()
-                        // wszystkie pozostałe muszą być autoryzowane
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/allUsers").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/catalog/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/catalog/products/featured").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/catalog/products/batch").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/orders/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
-
-                // 3) Teraz włącz JWT Resource Server
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
-                );
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
         return http.build();
+    }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
     }
 }

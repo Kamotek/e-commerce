@@ -20,6 +20,9 @@ public interface CatalogServiceClient {
     @GetMapping("/catalog/products")
     ResponseEntity<List<Product>> getAllProducts();
 
+    @GetMapping("/catalog/products/featured")
+    ResponseEntity<List<Product>> getAllProductsFeatured();
+
     @GetMapping("/catalog/products/{id}")
     ResponseEntity<Product> getProductById(@PathVariable("id") UUID id);
 
