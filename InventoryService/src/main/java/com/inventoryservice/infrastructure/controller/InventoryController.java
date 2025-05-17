@@ -1,5 +1,7 @@
 package com.inventoryservice.infrastructure.controller;
 
+import com.inventoryservice.application.command.handler.AddItemCommandHandler;
+import com.inventoryservice.application.command.model.AddItemCommand;
 import com.inventoryservice.application.dto.CreateItemRequest;
 import com.inventoryservice.application.dto.UpdateItemRequest;
 import com.inventoryservice.application.dto.StockItemDto;
@@ -12,6 +14,7 @@ import com.inventoryservice.domain.repository.StockRepository;
 import com.inventoryservice.domain.model.StockItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,7 @@ public class InventoryController {
     private final StockRepository repo;
     private final StockItemMapper mapper;
     private final AddStockCommandHandler addHandler;
+    private final AddItemCommandHandler addItemHandler;
     private final RemoveStockCommandHandler removeHandler;
 
     @PostMapping("/items")
@@ -77,6 +81,13 @@ public class InventoryController {
             @RequestParam int amount) {
         log.info("Dziala");
         addHandler.handle(new AddStockCommand(productId, amount));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Void> add(@Valid @RequestBody AddItemCommand command) {
+        log.info("Works");
+        addItemHandler.handle(command);
         return ResponseEntity.ok().build();
     }
 

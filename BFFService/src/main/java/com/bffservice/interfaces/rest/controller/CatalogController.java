@@ -40,6 +40,12 @@ public class CatalogController {
         return ResponseEntity.status(resp.getStatusCode()).body(resp.getBody());
     }
 
+    @GetMapping("/featured")
+    public ResponseEntity<List<Product>> getFeaturedProducts() {
+        ResponseEntity<List<Product>> resp = catalogClient.getAllProductsFeatured();
+        return ResponseEntity.status(resp.getStatusCode()).body(resp.getBody());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(
             @PathVariable UUID id

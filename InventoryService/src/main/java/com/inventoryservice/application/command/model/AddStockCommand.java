@@ -5,4 +5,5 @@ import java.util.UUID;
 public class AddStockCommand {
     private UUID productId;
     private int amount;
+
 }

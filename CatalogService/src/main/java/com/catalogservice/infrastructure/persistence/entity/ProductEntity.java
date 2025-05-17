@@ -17,19 +17,35 @@ import java.util.UUID;
 @Table(name="products")
 public class ProductEntity {
     @Id
-    @Column(name="id", updatable = false, nullable = false)
+    @Column(nullable = false, updatable = false)
     private UUID id;
-
-    @Column(nullable = false)
+    @Column
     private String name;
-
-    @Column(nullable = false)
+    @Column
     private String description;
-
-    @Column(nullable = false)
+    @Column
     private BigDecimal price;
-
-    @Column(nullable = false)
+    @Column
+    private BigDecimal originalPrice;
+    @Column
     private String category;
+    @Column
+    private Integer inventory;
+    @Column
+    private String status;
+    @Column
+    private String brand;
+    @Column
+    private String badge;
+    @Column
+    private Double rating;
+    @Column
+    private Integer reviewCount;
+
+    @Column(length = 5000)
+    private String specification; // JSON string
+
+    @Column(length = 2000)
+    private String imageUrls; // JSON array as String
 
 }

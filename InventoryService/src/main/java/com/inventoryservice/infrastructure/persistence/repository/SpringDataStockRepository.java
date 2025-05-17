@@ -22,6 +22,7 @@ public class SpringDataStockRepository implements StockRepository {
                 .productId(UUID.randomUUID())
                 .name(item.getName())
                 .category(item.getCategory())
+                .specification(item.getSpecification())
                 .description(item.getDescription())
                 .quantity(item.getQuantity())
                 .build();
@@ -35,6 +36,7 @@ public class SpringDataStockRepository implements StockRepository {
                 .orElseThrow(() -> new IllegalStateException("No item found for product " + productId));
         entity.setName(item.getName());
         entity.setCategory(item.getCategory());
+        entity.setSpecification(item.getSpecification());
         entity.setDescription(item.getDescription());
         entity.setQuantity(item.getQuantity());
         entity.setPrice(item.getPrice());

@@ -33,4 +33,10 @@ public class ReadProductQueryHandler {
                     return p;
                 }).orElse(null));
     }
+
+    public List<Product> handleFindAllFeatured() {
+        List<Product> products = productRepository.findAllFeatured();
+        products.forEach(p -> readPublisher.publishReadEvent(p.getId()));
+        return products;
+    }
 }

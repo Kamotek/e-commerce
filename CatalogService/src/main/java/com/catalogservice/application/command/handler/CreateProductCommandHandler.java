@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static com.catalogservice.util.JsonUtils.jsonToList;
+import static com.catalogservice.util.JsonUtils.jsonToMap;
+
 @Slf4j
 @Service
 public class CreateProductCommandHandler {
@@ -21,14 +24,24 @@ public class CreateProductCommandHandler {
     }
 
     public UUID handle(CreateProductCommand cmd) {
-        Product product = new Product(
-                cmd.getName(),
-                cmd.getDescription(),
-                cmd.getPrice(),
-                cmd.getCategory()
-        );
-        productRepository.save(product);
+        Product product = Product.builder()
+                .id(UUID.randomUUID())
+                .name(cmd.getName())
+                .description(cmd.getDescription())
+                .price(cmd.getPrice())
+                .originalPrice(cmd.getOriginalPrice())
+                .category(cmd.getCategory())
+                .inventory(cmd.getInventory())
+                .status(cmd.getStatus())
+                .brand(cmd.getBrand())
+                .badge(cmd.getBadge())
+                .rating(cmd.getRating())
+                .reviewCount(cmd.getReviewCount())
+                .specifications(jsonToMap(cmd.getSpecification()))
+                .imageUrls(jsonToList(cmd.getImageUrls()))
+                .build();
 
+        productRepository.save(product);
         publisher.publish(cmd);
         return product.getId();
     }

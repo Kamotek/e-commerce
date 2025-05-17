@@ -17,5 +17,15 @@ public class UpdateProductCommand {
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal originalPrice;
     private String category;
+    private Integer inventory;
+    private String status;
+    private String brand;
+    private String badge;
+    private Double rating;
+    private Integer reviewCount;
+
+    private String specificationsJson;
+    private String imageUrlsJson;
 }

@@ -9,6 +9,7 @@ public class StockItem {
     private UUID productId;
     private String name;
     private String category;
+    private String specification;
     private String description;
     private int quantity;
     private float price;

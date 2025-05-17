@@ -11,4 +11,5 @@ public interface ProductRepository {
     List<Product> findAll();
     Optional<Product> findById(UUID id);
     Optional<Product> findByName(String name);
+    List<Product> findAllFeatured();
 }
