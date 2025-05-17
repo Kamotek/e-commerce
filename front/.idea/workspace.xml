@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8381f614-b11c-43f8-8531-625afb945955" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/util/JsonUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/e-commerce-frontend/components/theme-provider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/e-commerce-frontend/lib/fetch-products.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../untitled/public/my_computer.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../untitled/src/components/Footer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../untitled/src/components/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/BffServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/BffServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/CreateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/CreateProductCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/UpdateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/UpdateProductCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/domain/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/domain/model/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/CreateProductCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/CreateProductCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/UpdateProductCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/UpdateProductCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/CreateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/CreateProductCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/UpdateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/UpdateProductCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/domain/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/domain/model/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/controller/CatalogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/controller/CatalogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/entity/ProductEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/entity/ProductEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/repository/SpringDataProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/repository/SpringDataProductRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../InventoryService/src/main/java/com/inventoryservice/application/command/handler/RemoveStockCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../InventoryService/src/main/java/com/inventoryservice/application/command/handler/RemoveStockCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotificationService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../NotificationService/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotificationService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../NotificationService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../OrderService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../OrderService/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../OrderService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../OrderService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaymentService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../PaymentService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../WelcomeNotificationService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../WelcomeNotificationService/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../create_package_structure.sh" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2x9KsC2F2POZJrb4TyNU8H4xOfT" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/kamil/Documents/PwrCourses/CloudComputing/e-commerce/front/e-commerce-frontend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23339.15" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8381f614-b11c-43f8-8531-625afb945955" name="Changes" comment="" />
+      <created>1747345054877</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747345054877</updated>
+      <workItem from="1747345056713" duration="8652000" />
+      <workItem from="1747398848969" duration="19953000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/e-commerce-frontend/components/admin-analytics.tsx</url>
+          <line>2</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

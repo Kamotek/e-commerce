@@ -30,3 +30,11 @@ export async function fetchProduct(id: string): Promise<Product> {
     }
     return res.json();
 }
+
+export async function fetchProductsFeatured(): Promise<Product[]> {
+    const res = await fetch(`http://localhost:8085/api/catalog/products/featured`);
+    if (!res.ok) {
+        throw new Error(`Failed to load product featured ${res.status}`);
+    }
+    return res.json();
+}
