@@ -78,6 +78,16 @@ public class AuthController {
         return ResponseEntity.ok(users);
     }
 
+    @PatchMapping("/setAdmin/{id}")
+    public ResponseEntity<?> setAdmin(@PathVariable UUID id) {
+        return userRepository.findById(id).map(
+                user -> { user.setRole("ADMIN");
+                    userRepository.save(user);
+                    return ResponseEntity.ok().build();
+                }
+        ).orElse(ResponseEntity.notFound().build());
+    }
+
 
 
 

@@ -25,7 +25,8 @@ public class SpringDataUserRepository implements UserRepository {
                 user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getCreatedAt()
+                user.getCreatedAt(),
+                user.getRole()
         );
         userJpaRepository.save(entity);
     }

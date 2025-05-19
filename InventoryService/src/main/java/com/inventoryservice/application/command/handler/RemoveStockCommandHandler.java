@@ -14,6 +14,6 @@ public class RemoveStockCommandHandler {
 
     public void handle(RemoveStockCommand command) {
         repository.removeStock(command.getProductId(), command.getAmount());
-        publisher.publish(command); // Publish event
+        publisher.publish(command);
     }
 }
