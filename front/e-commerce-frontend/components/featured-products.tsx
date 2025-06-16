@@ -1,119 +1,108 @@
+// app/components/FeaturedProducts.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ShoppingCart, Eye } from "lucide-react"
 import Link from "next/link"
-
-// Mock data for featured products
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Ultra Gaming Laptop",
-    description: "High-performance gaming laptop with RTX 4080",
-    price: 1999.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "laptops",
-    badge: "New",
-  },
-  {
-    id: 2,
-    name: "Pro Smartphone",
-    description: "Latest flagship smartphone with 108MP camera",
-    price: 899.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "smartphones",
-    badge: "Popular",
-  },
-  {
-    id: 3,
-    name: "Mechanical Keyboard",
-    description: "RGB mechanical keyboard with custom switches",
-    price: 149.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "accessories",
-  },
-  {
-    id: 4,
-    name: "4K Gaming Monitor",
-    description: "32-inch 4K monitor with 144Hz refresh rate",
-    price: 499.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "monitors",
-    badge: "Sale",
-  },
-  {
-    id: 5,
-    name: "RTX 4090 Graphics Card",
-    description: "Next-gen GPU for ultimate gaming performance",
-    price: 1499.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "gpus",
-  },
-  {
-    id: 6,
-    name: "Wireless Earbuds",
-    description: "Premium wireless earbuds with noise cancellation",
-    price: 129.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "accessories",
-    badge: "Best Seller",
-  },
-]
+import { fetchProductsFeatured, Product } from "@/lib/fetch-products"
+import { useCart } from "@/contexts/CartContext"
 
 export default function FeaturedProducts() {
-  const [addedToCart, setAddedToCart] = useState<Record<number, boolean>>({})
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [addedToCart, setAddedToCart] = useState<Record<string, boolean>>({})
+  const { addToCart } = useCart()
 
-  const handleAddToCart = (productId: number) => {
+  useEffect(() => {
+    async function loadFeatured() {
+      try {
+        const products = await fetchProductsFeatured()
+        setFeaturedProducts(products)
+      } catch (err: any) {
+        setError(err.message || "Unknown error")
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadFeatured()
+  }, [])
+
+  const handleAddToCart = (product: Product) => {
+    addToCart(product, 1)
     setAddedToCart((prev) => ({
       ...prev,
-      [productId]: true,
+      [product.id]: true,
     }))
-
-    // Reset the "Added" state after 2 seconds
     setTimeout(() => {
       setAddedToCart((prev) => ({
         ...prev,
-        [productId]: false,
+        [product.id]: false,
       }))
     }, 2000)
   }
 
+  if (loading) {
+    return <div className="text-center py-8">Loading products...</div>
+  }
+  if (error) {
+    return <div className="text-center py-8 text-red-500">error: {error}</div>
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {featuredProducts.map((product) => (
-        <Card key={product.id} className="overflow-hidden">
-          <div className="relative">
-            <img src={product.image || "/placeholder.svg"} alt={product.name} className="w-full h-48 object-cover" />
-            {product.badge && <Badge className="absolute top-2 right-2">{product.badge}</Badge>}
-          </div>
-          <CardContent className="p-4">
-            <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-            <p className="text-muted-foreground text-sm mb-2">{product.description}</p>
-            <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
-          </CardContent>
-          <CardFooter className="p-4 pt-0 flex gap-2">
-            <Button variant="default" size="sm" className="flex-1" onClick={() => handleAddToCart(product.id)}>
-              {addedToCart[product.id] ? (
-                "Added!"
-              ) : (
-                <>
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Buy Now
-                </>
-              )}
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/catalog/product/${product.id}`}>
-                <Eye className="mr-2 h-4 w-4" />
-                Details
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {featuredProducts.map((product) => (
+            <Card key={product.id} className="overflow-hidden">
+              <div className="relative">
+                <img
+                    src={
+                      product.imageUrls && product.imageUrls.length > 0
+                          ? product.imageUrls[0]
+                          : "/placeholder.svg"
+                    }
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                />
+                {product.badge && (
+                    <Badge className="absolute top-2 right-2">{product.badge}</Badge>
+                )}
+              </div>
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+                <p className="text-muted-foreground text-sm mb-2">{product.description}</p>
+                <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
+              </CardContent>
+              <CardFooter className="p-4 pt-0 flex gap-2">
+                <Button
+                    variant="default"
+                    size="sm"
+                    className={
+                      addedToCart[product.id] ? "flex-1 animate-pulse" : "flex-1"
+                    }
+                    onClick={() => handleAddToCart(product)}
+                    disabled={addedToCart[product.id]}
+                >
+                  {addedToCart[product.id] ? (
+                      "Added!"
+                  ) : (
+                      <>
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        Buy now!
+                      </>
+                  )}
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/catalog/product/${product.id}`}>
+                    <Eye className="mr-2 h-4 w-4" />
+                    Details
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+        ))}
+      </div>
   )
 }

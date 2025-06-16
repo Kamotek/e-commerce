@@ -1,6 +1,3 @@
-# ----------------------------
-# 1. Build stage
-# ----------------------------
 FROM gradle:8-jdk17 AS builder
 
 WORKDIR /app
@@ -14,8 +11,7 @@ COPY src /app/src
 RUN gradle bootJar --warning-mode=all -x test
 
 # ----------------------------
-# 2. Run stage
-# ----------------------------
+
 FROM eclipse-temurin:17-jdk-jammy AS runtime
 
 WORKDIR /app

@@ -6,14 +6,19 @@ import com.bffservice.application.command.model.RegisterUserCommand;
 import com.bffservice.domain.model.AggregatedUser;
 import com.bffservice.interfaces.rest.AuthServiceClient;
 import feign.FeignException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,9 +43,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(
-            @Valid @RequestBody LoginUserCommand cmd
+            @Valid @RequestBody LoginUserCommand cmd,
+            HttpServletResponse servletResponse
     ) {
         ResponseEntity<Map<String, Object>> resp = authClient.login(cmd);
+
+        List<String> setCookie = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
+        if (setCookie != null) {
+            setCookie.forEach(cookie -> servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie));
+        }
+
         return ResponseEntity
                 .status(resp.getStatusCode())
                 .body(resp.getBody());
@@ -52,5 +64,32 @@ public class AuthController {
         return ResponseEntity
                 .status(resp.getStatusCode())
                 .body(resp.getBody());
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout(HttpServletResponse servletResponse) {
+        ResponseEntity<Map<String, Object>> resp = authClient.logout();
+
+        List<String> setCookie = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
+        if (setCookie != null) {
+            setCookie.forEach(cookie -> servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie));
+        }
+
+        return ResponseEntity
+                .status(resp.getStatusCode())
+                .body(resp.getBody());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+        if (jwt == null) {
+            return ResponseEntity.status(401).build();
+        }
+        Map<String,Object> body = Map.of(
+                "email",     jwt.getSubject(),
+                "userId",    jwt.getClaimAsString("userId"),
+                "roles",     jwt.getClaimAsStringList("roles")
+        );
+        return ResponseEntity.ok(body);
     }
 }

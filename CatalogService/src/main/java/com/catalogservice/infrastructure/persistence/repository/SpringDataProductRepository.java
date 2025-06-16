@@ -2,10 +2,15 @@ package com.catalogservice.infrastructure.persistence.repository;
 
 import com.catalogservice.domain.model.Product;
 import com.catalogservice.domain.repository.ProductRepository;
-import com.catalogservice.infrastructure.persistence.entity.ProductEntity;import com.catalogservice.util.JsonUtils;
+import com.catalogservice.infrastructure.persistence.entity.ProductEntity;
+import com.catalogservice.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,7 +27,6 @@ public class SpringDataProductRepository implements ProductRepository {
 
     @Override
     public void save(Product product) {
-        // Ensure constructor parameters follow ProductEntity field order
         ProductEntity entity = new ProductEntity(
                 product.getId(),
                 product.getName(),
@@ -40,6 +44,11 @@ public class SpringDataProductRepository implements ProductRepository {
                 JsonUtils.listToJson(product.getImageUrls())
         );
         productJpaRepository.save(entity);
+    }
+
+    @Override
+    public void deleteProductById(UUID id) {
+        productJpaRepository.deleteById(id);
     }
 
     @Override
@@ -61,9 +70,42 @@ public class SpringDataProductRepository implements ProductRepository {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Map JPA entity to domain model
-     */
+    @Override
+    public List<Product> findAllFeatured() {
+        return productJpaRepository.findAllFeatured().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public Page<Product> findByFilters(
+            String category,
+            BigDecimal maxPrice,
+            String brand,
+            boolean availableOnly,
+            Pageable pageable
+    ) {
+        Page<ProductEntity> entityPage = productJpaRepository.findByFilters(
+                category,
+                maxPrice,
+                brand,
+                availableOnly,
+                pageable
+        );
+
+        List<Product> domainList = entityPage.getContent().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(
+                domainList,
+                pageable,
+                entityPage.getTotalElements()
+        );
+    }
+
+
     private Product toDomain(ProductEntity e) {
         return Product.builder()
                 .id(e.getId())
@@ -83,9 +125,4 @@ public class SpringDataProductRepository implements ProductRepository {
                 .build();
     }
 
-    public List<Product> findAllFeatured() {
-        return productJpaRepository.findAllFeatured().stream()
-                .map(this::toDomain)
-                .collect(Collectors.toList());
-    }
 }

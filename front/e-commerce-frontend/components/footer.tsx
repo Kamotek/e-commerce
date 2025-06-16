@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <h3 className="mb-4 text-lg font-medium">TechHub</h3>
+            <h3 className="mb-4 text-lg font-medium">ComputeroShop</h3>
             <p className="text-muted-foreground">
               Your one-stop shop for all your technology needs. Quality products, expert advice, and excellent customer
               service.
@@ -106,7 +106,7 @@ export default function Footer() {
         <div className="mt-10 border-t pt-6">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} TechHub. All rights reserved.
+              &copy; {new Date().getFullYear()} ComputeroShop. All rights reserved.
             </p>
             <div className="flex gap-4 text-sm text-muted-foreground">
               <Link href="/privacy" className="hover:text-foreground">

@@ -43,9 +43,9 @@ public class ProductEntity {
     private Integer reviewCount;
 
     @Column(length = 5000)
-    private String specification; // JSON string
+    private String specification;
 
     @Column(length = 2000)
-    private String imageUrls; // JSON array as String
+    private String imageUrls;
 
 }

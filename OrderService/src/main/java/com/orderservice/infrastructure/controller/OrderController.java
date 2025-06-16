@@ -25,11 +25,8 @@ public class OrderController {
     public ResponseEntity<Order> createOrder(@Valid @RequestBody CreateOrderCommand command) {
         Order created = createHandler.handle(command);
         URI location = URI.create("/api/orders/" + created.getId());
-        return ResponseEntity
-                .created(location)
-                .body(created);
+        return ResponseEntity.created(location).body(created);
     }
-
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrder(@PathVariable UUID orderId) {
@@ -40,8 +37,7 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<Order>> listOrders() {
-        List<Order> all = orderRepository.findAll();
-        return ResponseEntity.ok(all);
+        return ResponseEntity.ok(orderRepository.findAll());
     }
 
     @PutMapping("/{orderId}")

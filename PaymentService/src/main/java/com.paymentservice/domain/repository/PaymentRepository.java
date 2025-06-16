@@ -11,4 +11,5 @@ public interface PaymentRepository {
     void deletePayment(UUID paymentId);
     Optional<Payment> findByPaymentId(UUID paymentId);
     List<Payment> findAllPayments();
+    Optional<Payment> findByOrderId(UUID orderId);
 }

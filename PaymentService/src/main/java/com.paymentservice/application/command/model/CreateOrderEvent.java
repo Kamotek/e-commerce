@@ -2,6 +2,8 @@ package com.paymentservice.application.command.model;
 
 
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +16,7 @@ public class CreateOrderEvent {
     private UUID orderId;
     private UUID userId;
     private Instant orderDate;
+    private BigDecimal totalAmount; 
     private List<OrderItem> items;
 
     @Data

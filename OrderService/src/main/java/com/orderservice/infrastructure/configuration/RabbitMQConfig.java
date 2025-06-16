@@ -25,8 +25,8 @@ public class RabbitMQConfig {
     public static final String ORDER_KEY      = "orders.create";
 
     public static final String PAYMENT_EXCHANGE           = "payments.exchange";
-    public static final String PAYMENT_SUBMITTED_QUEUE    = "orders.payment.submitted.queue";
-    public static final String PAYMENT_SUBMITTED_ROUTING  = "payments.submitted";
+    public static final String PAYMENT_PROCESSED_QUEUE = "orders.payment.processed.queue";
+    public static final String PAYMENTS_PROCESSED = "payments.processed";
 
     @Bean
     public TopicExchange paymentExchange() {
@@ -35,7 +35,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue paymentSubmittedQueue() {
-        return new Queue(PAYMENT_SUBMITTED_QUEUE, true);
+        return new Queue(PAYMENT_PROCESSED_QUEUE, true);
     }
 
     @Bean
@@ -44,17 +44,15 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(paymentSubmittedQueue)
                 .to(paymentExchange)
-                .with(PAYMENT_SUBMITTED_ROUTING);
+                .with(PAYMENTS_PROCESSED);
     }
 
 
-    // 1) Exchange typu Topic
     @Bean
     public TopicExchange orderExchange() {
         return new TopicExchange(ORDER_EXCHANGE);
     }
 
-    // 2) Kolejka
     @Bean
     public Queue orderQueue() {
         return new Queue(NOTIFICATION_ORDER_QUEUE, true);
@@ -70,7 +68,6 @@ public class RabbitMQConfig {
         return new Queue(PAYMENT_ORDER_QUEUE, true);
     }
 
-    // 3) Binding (Exchange → Queue)
     @Bean
     public Binding orderBinding(Queue orderQueue, TopicExchange orderExchange) {
         return BindingBuilder
@@ -79,13 +76,11 @@ public class RabbitMQConfig {
                 .with(ORDER_KEY);
     }
 
-    // 4) JSON converter
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper mapper) {
         return new Jackson2JsonMessageConverter(mapper);
     }
 
-    // 5) RabbitTemplate z JSON converterem
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory cf,
                                          Jackson2JsonMessageConverter converter) {
@@ -94,7 +89,6 @@ public class RabbitMQConfig {
         return tpl;
     }
 
-    // 6) Listener factory z JSON converterem
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory cf,

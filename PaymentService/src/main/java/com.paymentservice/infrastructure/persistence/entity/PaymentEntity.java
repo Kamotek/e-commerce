@@ -1,5 +1,6 @@
 package com.paymentservice.infrastructure.persistence.entity;
 
+import com.paymentservice.domain.model.Payment;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -30,9 +31,14 @@ public class PaymentEntity {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Payment.PaymentStatus status;
+
     @PrePersist
     public void prePersist() {
         if (createdAt == null) createdAt = Instant.now();
         if (paymentId == null) paymentId = UUID.randomUUID();
+        if (status == null) status = Payment.PaymentStatus.PENDING;
     }
 }

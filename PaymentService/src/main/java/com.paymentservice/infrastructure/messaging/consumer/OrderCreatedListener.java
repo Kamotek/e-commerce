@@ -24,11 +24,7 @@ public class OrderCreatedListener {
                 CreatePaymentCommand.builder()
                         .userId(event.getUserId())
                         .orderId(event.getOrderId())
-                        .amount(
-                                event.getItems().stream()
-                                        .map(item -> BigDecimal.valueOf(item.getQuantity()))
-                                        .reduce(BigDecimal.ZERO, BigDecimal::add)
-                        )
+                        .amount(event.getTotalAmount())
                         .createdAt(event.getOrderDate())
                         .build()
         );

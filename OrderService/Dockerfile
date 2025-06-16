@@ -17,8 +17,8 @@ FROM eclipse-temurin:17-jdk-jammy AS runtime
 
 WORKDIR /app
 
-COPY --from=builder /app/build/libs/*.jar bff-service.jar
+COPY --from=builder /app/build/libs/*.jar app.jar
 
 EXPOSE 8083
 
-ENTRYPOINT ["/srcsh", "-c", "java $JAVA_OPTS -jar bff-service.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

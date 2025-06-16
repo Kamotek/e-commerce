@@ -36,6 +36,11 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
     // dla testow
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.2.1'
+
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 
     testImplementation 'com.h2database:h2'
 }

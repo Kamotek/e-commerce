@@ -19,14 +19,15 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
-    private BigDecimal originalPrice; // Do wyświetlania przecen
+    private BigDecimal originalPrice;
     private String category;
-    private Integer inventory; // Ilość dostępna
-    private String status; // "In Stock", "Low Stock", "Out of Stock"
-    private List<String> imageUrls; // Lista URL-i do zdjęć
-    private Double rating; // Średnia ocena
-    private Integer reviewCount; // Liczba recenzji
-    private Map<String, String> specifications; // Specyfikacje techniczne jako pary klucz-wartość
+    private Integer inventory;
+    private String status;
+    private List<String> imageUrls;
+    private Double rating;
+    private Integer reviewCount;
+    private Map<String, String> specifications;
     private String brand;
-    private String badge; // "New", "Sale", "Popular" itp.
+    private String badge;
+
 }

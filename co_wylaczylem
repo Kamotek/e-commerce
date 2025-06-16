@@ -1,0 +1,5 @@
+wylaczylem httpd.server
+wylaczylem rabbitmq-server.service 
+systemctl stop postgresql	
+uzylem do tego systmectl stop i systemctl disable
+

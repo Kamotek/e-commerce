@@ -7,12 +7,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "order_items")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class OrderItemEntity {
+
     @Id
     @GeneratedValue
     private Long id;

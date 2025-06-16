@@ -1,101 +1,103 @@
-"use client"
+// components/product-recommendations.tsx
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ShoppingCart, Eye } from "lucide-react"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ShoppingCart, Eye } from "lucide-react";
+import Link from "next/link";
+import { fetchProductsByCategory, Product } from "@/lib/fetch-products";
 
-// Mock data for recommended products
-const recommendedProducts = [
-  {
-    id: 2,
-    name: "Pro Smartphone",
-    description: "Latest flagship smartphone with 108MP camera",
-    price: 899.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "smartphones",
-    badge: "Popular",
-  },
-  {
-    id: 4,
-    name: "4K Gaming Monitor",
-    description: "32-inch 4K monitor with 144Hz refresh rate",
-    price: 499.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "monitors",
-    badge: "Sale",
-  },
-  {
-    id: 5,
-    name: "RTX 4090 Graphics Card",
-    description: "Next-gen GPU for ultimate gaming performance",
-    price: 1499.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "gpus",
-  },
-  {
-    id: 3,
-    name: "Mechanical Keyboard",
-    description: "RGB mechanical keyboard with custom switches",
-    price: 149.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "accessories",
-  },
-]
+interface RecommendationsProps {
+  category: string;
+  currentProductId: string;
+}
 
-export default function ProductRecommendations() {
-  const [addedToCart, setAddedToCart] = useState<Record<number, boolean>>({})
+export default function ProductRecommendations({
+                                                 category,
+                                                 currentProductId,
+                                               }: RecommendationsProps) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [addedToCart, setAddedToCart] = useState<Record<string, boolean>>({});
 
-  const handleAddToCart = (productId: number) => {
-    setAddedToCart((prev) => ({
-      ...prev,
-      [productId]: true,
-    }))
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
 
-    // Reset the "Added" state after 2 seconds
+    fetchProductsByCategory(category, 4)
+        .then((list) => {
+          // odrzucamy bieżący produkt, ewentualnie dopadamy do 4
+          const filtered = list
+              .filter((p) => p.id !== currentProductId)
+              .slice(0, 4);
+          setProducts(filtered);
+        })
+        .catch((e: any) => setError(e.message))
+        .finally(() => setLoading(false));
+  }, [category, currentProductId]);
+
+  const handleAddToCart = (id: string) => {
+    setAddedToCart((prev) => ({ ...prev, [id]: true }));
     setTimeout(() => {
-      setAddedToCart((prev) => ({
-        ...prev,
-        [productId]: false,
-      }))
-    }, 2000)
-  }
+      setAddedToCart((prev) => ({ ...prev, [id]: false }));
+    }, 2000);
+  };
+
+  if (loading) return <p>Loading recommendations…</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (products.length === 0) return <p>Brak rekomendacji w tej kategorii.</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-      {recommendedProducts.map((product) => (
-        <Card key={product.id} className="overflow-hidden">
-          <div className="relative">
-            <img src={product.image || "/placeholder.svg"} alt={product.name} className="w-full h-48 object-cover" />
-            {product.badge && <Badge className="absolute top-2 right-2">{product.badge}</Badge>}
-          </div>
-          <CardContent className="p-4">
-            <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-            <p className="text-muted-foreground text-sm mb-2">{product.description}</p>
-            <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
-          </CardContent>
-          <CardFooter className="p-4 pt-0 flex gap-2">
-            <Button variant="default" size="sm" className="flex-1" onClick={() => handleAddToCart(product.id)}>
-              {addedToCart[product.id] ? (
-                "Added!"
-              ) : (
-                <>
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Buy Now
-                </>
-              )}
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/catalog/product/${product.id}`}>
-                <Eye className="mr-2 h-4 w-4" />
-                Details
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
-  )
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {products.map((product) => (
+            <Card key={product.id} className="overflow-hidden">
+              <div className="relative">
+                <img
+                    src={product.imageUrls?.[0] || "/placeholder.svg"}
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                />
+                {product.badge && (
+                    <Badge className="absolute top-2 right-2">
+                      {product.badge}
+                    </Badge>
+                )}
+              </div>
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+                <p className="text-muted-foreground text-sm mb-2">
+                  {product.description}
+                </p>
+                <p className="font-bold text-lg">
+                  ${product.price.toFixed(2)}
+                </p>
+              </CardContent>
+              <CardFooter className="p-4 pt-0 flex gap-2">
+                <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => handleAddToCart(product.id)}
+                >
+                  {addedToCart[product.id] ? (
+                      "Added!"
+                  ) : (
+                      <>
+                        <ShoppingCart className="mr-2 h-4 w-4" /> Buy Now
+                      </>
+                  )}
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/catalog/product/${product.id}`}>
+                    <Eye className="mr-2 h-4 w-4" /> Details
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+        ))}
+      </div>
+  );
 }

@@ -24,4 +24,7 @@ public interface AuthServiceClient {
 
     @GetMapping("/auth/allUsers")
     ResponseEntity<List<AggregatedUser>> getAllUsers();
+
+    @PostMapping("/auth/logout")
+    ResponseEntity<Map<String, Object>> logout();
 }
