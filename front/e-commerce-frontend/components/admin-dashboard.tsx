@@ -17,10 +17,9 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "@/components/ui/chart"
+} from "recharts"
 import { ArrowUpRight, Users, Package, DollarSign, Activity } from "lucide-react"
 
-// Mock data for charts
 const salesData = [
   { name: "Jan", value: 4000 },
   { name: "Feb", value: 3000 },

@@ -4,37 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8381f614-b11c-43f8-8531-625afb945955" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/util/JsonUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/e-commerce-frontend/components/theme-provider.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/e-commerce-frontend/lib/fetch-products.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../untitled/public/my_computer.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../untitled/src/components/Footer.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../untitled/src/components/Navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AuthService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/BffServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/BffServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/CreateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/CreateProductCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/UpdateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/application/command/model/UpdateProductCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/domain/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/java/com/bffservice/domain/model/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BFFService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BFFService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/CreateProductCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/CreateProductCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/UpdateProductCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/handler/UpdateProductCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/CreateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/CreateProductCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/UpdateProductCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/application/command/model/UpdateProductCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/domain/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/domain/model/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/controller/CatalogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/controller/CatalogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/entity/ProductEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/entity/ProductEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/repository/SpringDataProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../CatalogService/src/main/java/com/catalogservice/infrastructure/persistence/repository/SpringDataProductRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../InventoryService/src/main/java/com/inventoryservice/application/command/handler/RemoveStockCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../InventoryService/src/main/java/com/inventoryservice/application/command/handler/RemoveStockCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotificationService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../NotificationService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotificationService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../NotificationService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../OrderService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../OrderService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../OrderService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../OrderService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PaymentService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../PaymentService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../WelcomeNotificationService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../WelcomeNotificationService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../create_package_structure.sh" beforeDir="false" />
-    </list>
+    <list default="true" id="8381f614-b11c-43f8-8531-625afb945955" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,11 +14,15 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -72,6 +46,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/e-commerce-frontend" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -88,7 +67,17 @@
       <option name="presentableId" value="Default" />
       <updated>1747345054877</updated>
       <workItem from="1747345056713" duration="8652000" />
-      <workItem from="1747398848969" duration="19953000" />
+      <workItem from="1747398848969" duration="28412000" />
+      <workItem from="1747671230596" duration="1116000" />
+      <workItem from="1748012197162" duration="21122000" />
+      <workItem from="1748953155091" duration="1632000" />
+      <workItem from="1749211066883" duration="13987000" />
+      <workItem from="1749236321907" duration="6630000" />
+      <workItem from="1749306946696" duration="22289000" />
+      <workItem from="1749376426828" duration="11769000" />
+      <workItem from="1749730062053" duration="17941000" />
+      <workItem from="1749910213833" duration="3808000" />
+      <workItem from="1750068266926" duration="2452000" />
     </task>
     <servers />
   </component>
@@ -99,9 +88,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/e-commerce-frontend/components/admin-analytics.tsx</url>
+          <url>file://$PROJECT_DIR$/e-commerce-frontend/components/product-filters.tsx</url>
           <line>2</line>
-          <option name="timeStamp" value="1" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/e-commerce-frontend/components/navbar.tsx</url>
+          <line>28</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/e-commerce-frontend/app/payment/[orderId]/page.tsx</url>
+          <line>2</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

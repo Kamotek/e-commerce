@@ -25,6 +25,11 @@ public class SpringDataPaymentRepository implements PaymentRepository {
     }
 
     @Override
+    public Optional<Payment> findByOrderId(UUID orderId) {
+        return jpa.findByOrderId(orderId).map(mapper::toDomain);
+    }
+
+    @Override
     public Payment updatePayment(Payment payment) {
         if (!jpa.existsById(payment.getPaymentId())) {
             throw new IllegalArgumentException("No payment with id " + payment.getPaymentId());

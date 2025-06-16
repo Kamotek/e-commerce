@@ -8,9 +8,29 @@ import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ActiveFilters } from "@/app/catalog/page";
 
-export default function ProductFilters() {
-  const [priceRange, setPriceRange] = useState([0, 2000])
+export interface FilterState {
+  priceRange: [number, number];
+  selectedCategories: string[];
+  selectedBrands: string[];
+  inStock: boolean;
+  onSale: boolean;
+  sortBy: string;
+}
+
+interface ProductFiltersProps {
+  onApplyFilters: (filters: FilterState) => void;
+  defaultValues: ActiveFilters;
+}
+
+export default function ProductFilters({ onApplyFilters, defaultValues }: ProductFiltersProps) {
+  const [priceRange, setPriceRange] = useState<[number, number]>(defaultValues.priceRange);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(defaultValues.categories);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(defaultValues.brands);
+  const [inStock, setInStock] = useState(defaultValues.inStock);
+  const [onSale, setOnSale] = useState(false);
+  const [sortBy, setSortBy] = useState(defaultValues.sortBy);
 
   const categories = [
     { id: "laptops", label: "Laptops" },
@@ -42,105 +62,159 @@ export default function ProductFilters() {
     { id: "nvidia", label: "NVIDIA" },
   ]
 
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    setSelectedCategories(prev =>
+        checked ? [...prev, categoryId] : prev.filter(id => id !== categoryId)
+    );
+  };
+
+  const handleBrandChange = (brandId: string, checked: boolean) => {
+    setSelectedBrands(prev =>
+        checked ? [...prev, brandId] : prev.filter(id => id !== brandId)
+    );
+  };
+
+  const handleApply = () => {
+    onApplyFilters({
+      priceRange,
+      selectedCategories,
+      selectedBrands,
+      inStock,
+      onSale,
+      sortBy,
+    });
+  };
+
+  const handleSortChange = (newSortValue: string) => {
+    setSortBy(newSortValue);
+
+    onApplyFilters({
+      priceRange,
+      selectedCategories,
+      selectedBrands,
+      inStock,
+      onSale,
+      sortBy: newSortValue,
+    });
+  };
+
+  const handleReset = () => {
+    setPriceRange(defaultValues.priceRange);
+    setSelectedCategories(defaultValues.categories);
+    setSelectedBrands(defaultValues.brands);
+    setInStock(defaultValues.inStock);
+    setOnSale(false);
+    setSortBy(defaultValues.sortBy);
+
+    onApplyFilters({
+      priceRange: defaultValues.priceRange,
+      selectedCategories: defaultValues.categories,
+      selectedBrands: defaultValues.brands,
+      inStock: defaultValues.inStock,
+      onSale: false,
+      sortBy: defaultValues.sortBy
+    });
+  }
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium mb-4">Filters</h3>
-        <Select defaultValue="featured">
-          <SelectTrigger>
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="featured">Featured</SelectItem>
-            <SelectItem value="price-low">Price: Low to High</SelectItem>
-            <SelectItem value="price-high">Price: High to Low</SelectItem>
-            <SelectItem value="newest">Newest</SelectItem>
-            <SelectItem value="rating">Highest Rated</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-medium mb-4">Filters</h3>
+          <Select value={sortBy} onValueChange={handleSortChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="featured">Featured</SelectItem>
+              <SelectItem value="price-low">Price: Low to High</SelectItem>
+              <SelectItem value="price-high">Price: High to Low</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="rating">Highest Rated</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Accordion type="multiple" defaultValue={["price", "categories"]}>
+          <AccordionItem value="price">
+            <AccordionTrigger>Price Range</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                <Slider defaultValue={priceRange} max={2000} step={10} value={priceRange} onValueChange={(value) => setPriceRange(value as [number, number])} />
+                <div className="flex justify-between text-sm">
+                  <Input
+                      type="number"
+                      value={priceRange[0]}
+                      onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
+                      className="w-24"
+                  />
+                  <Input
+                      type="number"
+                      value={priceRange[1]}
+                      onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
+                      className="w-24"
+                  />
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="categories">
+            <AccordionTrigger>Categories</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                    <div key={category.id} className="flex items-center space-x-2">
+                      <Checkbox
+                          id={`category-${category.id}`}
+                          checked={selectedCategories.includes(category.id)}
+                          onCheckedChange={(checked) => handleCategoryChange(category.id, !!checked)}
+                      />
+                      <Label htmlFor={`category-${category.id}`}>{category.label}</Label>
+                    </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="brands">
+            <AccordionTrigger>Brands</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-2">
+                {brands.map((brand) => (
+                    <div key={brand.id} className="flex items-center space-x-2">
+                      <Checkbox
+                          id={`brand-${brand.id}`}
+                          checked={selectedBrands.includes(brand.id)}
+                          onCheckedChange={(checked) => handleBrandChange(brand.id, !!checked)}
+                      />
+                      <Label htmlFor={`brand-${brand.id}`}>{brand.label}</Label>
+                    </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="availability">
+            <AccordionTrigger>Availability</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="in-stock" checked={inStock} onCheckedChange={(checked) => setInStock(!!checked)} />
+                  <Label htmlFor="in-stock">In Stock</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="on-sale" checked={onSale} onCheckedChange={(checked) => setOnSale(!!checked)} />
+                  <Label htmlFor="on-sale">On Sale</Label>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        <Button className="w-full" onClick={handleApply}>Apply Filters</Button>
+        <Button variant="outline" className="w-full" onClick={handleReset}>
+          Reset Filters
+        </Button>
       </div>
-
-      <Accordion type="multiple" defaultValue={["price", "categories"]}>
-        <AccordionItem value="price">
-          <AccordionTrigger>Price Range</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-4">
-              <Slider defaultValue={[0, 2000]} max={2000} step={10} value={priceRange} onValueChange={setPriceRange} />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor="min-price">$</Label>
-                  <Input
-                    id="min-price"
-                    type="number"
-                    className="w-20"
-                    value={priceRange[0]}
-                    onChange={(e) => setPriceRange([Number.parseInt(e.target.value), priceRange[1]])}
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor="max-price">$</Label>
-                  <Input
-                    id="max-price"
-                    type="number"
-                    className="w-20"
-                    value={priceRange[1]}
-                    onChange={(e) => setPriceRange([priceRange[0], Number.parseInt(e.target.value)])}
-                  />
-                </div>
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="categories">
-          <AccordionTrigger>Categories</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2">
-              {categories.map((category) => (
-                <div key={category.id} className="flex items-center space-x-2">
-                  <Checkbox id={`category-${category.id}`} />
-                  <Label htmlFor={`category-${category.id}`}>{category.label}</Label>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="brands">
-          <AccordionTrigger>Brands</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2">
-              {brands.map((brand) => (
-                <div key={brand.id} className="flex items-center space-x-2">
-                  <Checkbox id={`brand-${brand.id}`} />
-                  <Label htmlFor={`brand-${brand.id}`}>{brand.label}</Label>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="availability">
-          <AccordionTrigger>Availability</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="in-stock" />
-                <Label htmlFor="in-stock">In Stock</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="on-sale" />
-                <Label htmlFor="on-sale">On Sale</Label>
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <Button className="w-full">Apply Filters</Button>
-      <Button variant="outline" className="w-full">
-        Reset Filters
-      </Button>
-    </div>
   )
 }

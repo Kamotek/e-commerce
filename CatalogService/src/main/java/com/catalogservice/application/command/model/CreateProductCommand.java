@@ -24,5 +24,5 @@ public class CreateProductCommand {
     private Double rating;
     private Integer reviewCount;
     private String specification;
-    private String imageUrls; // JSON array as String
+    private String imageUrls;
 }

@@ -22,22 +22,27 @@ public class RabbitMQConfig {
     public static final String PAYMENT_QUEUE = "payments.submitted.queue";
     public static final String PAYMENT_ROUTING_KEY = "payments.submitted";
 
+    public static final String PAYMENT_PROCESSED_QUEUE = "orders.payment_processed.queue";
+    public static final String PAYMENT_PROCESSED_ROUTING_KEY = "payments.processed";
+
+    @Bean
+    public Queue paymentProcessedQueue() {
+        return new Queue(PAYMENT_PROCESSED_QUEUE, true);
+    }
+
+    @Bean
+    public Binding paymentProcessedBinding(Queue paymentProcessedQueue, TopicExchange paymentExchange) {
+        return BindingBuilder.bind(paymentProcessedQueue)
+                .to(paymentExchange)
+                .with(PAYMENT_PROCESSED_ROUTING_KEY);
+    }
+
     @Bean
     public TopicExchange paymentExchange() {
         return new TopicExchange(PAYMENT_EXCHANGE);
     }
 
-    @Bean
-    public Queue paymentQueue() {
-        return new Queue(PAYMENT_QUEUE, true);
-    }
 
-    @Bean
-    public Binding paymentBinding(Queue paymentQueue, TopicExchange paymentExchange) {
-        return BindingBuilder.bind(paymentQueue)
-                .to(paymentExchange)
-                .with(PAYMENT_ROUTING_KEY);
-    }
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory cf) {
         return new RabbitAdmin(cf);

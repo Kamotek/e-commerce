@@ -16,4 +16,9 @@ public class Payment {
     private UUID orderId;
     private BigDecimal amount;
     private Instant createdAt;
+    private PaymentStatus status;
+
+    public enum PaymentStatus {
+        PENDING, COMPLETED, FAILED
+    }
 }

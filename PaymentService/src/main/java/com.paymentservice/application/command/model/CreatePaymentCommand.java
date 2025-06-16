@@ -10,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class CreatePaymentCommand {
     @NotNull
     private UUID userId;

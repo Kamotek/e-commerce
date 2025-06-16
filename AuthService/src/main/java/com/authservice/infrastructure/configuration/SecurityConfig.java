@@ -16,7 +16,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .map(u -> new org.springframework.security.core.userdetails.User(
                                 u.getEmail(),
                                 u.getPassword(),
-                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
                         ))
                         .orElseThrow(() -> new UsernameNotFoundException(username));
     }
@@ -58,15 +58,14 @@ public class SecurityConfig {
         http
                 .authenticationProvider(authProvider)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login", "/auth/allUsers").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable);
+                .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

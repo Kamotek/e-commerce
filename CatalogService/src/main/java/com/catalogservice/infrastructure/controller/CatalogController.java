@@ -1,36 +1,34 @@
 package com.catalogservice.infrastructure.controller;
 
 import com.catalogservice.application.command.handler.CreateProductCommandHandler;
+import com.catalogservice.application.command.handler.DeleteProductCommandHandler;
 import com.catalogservice.application.command.handler.UpdateProductCommandHandler;
 import com.catalogservice.application.command.model.CreateProductCommand;
+import com.catalogservice.application.command.model.DeleteProductCommand;
 import com.catalogservice.application.command.model.UpdateProductCommand;
 import com.catalogservice.application.query.handler.ReadProductQueryHandler;
+import com.catalogservice.domain.model.PagedResult;
 import com.catalogservice.domain.model.Product;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-
 @RestController
+@AllArgsConstructor
 @RequestMapping("/catalog/products")
 public class CatalogController {
 
     private final CreateProductCommandHandler createHandler;
     private final UpdateProductCommandHandler updateHandler;
     private final ReadProductQueryHandler readHandler;
-
-    public CatalogController(
-            CreateProductCommandHandler createHandler,
-            UpdateProductCommandHandler updateHandler,
-            ReadProductQueryHandler readHandler) {
-        this.createHandler = createHandler;
-        this.updateHandler = updateHandler;
-        this.readHandler = readHandler;
-    }
+    private final DeleteProductCommandHandler deleteHandler;
 
     @PostMapping
     public ResponseEntity<UUID> createProduct(@RequestBody CreateProductCommand cmd) {
@@ -52,6 +50,8 @@ public class CatalogController {
         return ResponseEntity.ok().build();
     }
 
+
+
     @GetMapping("/featured")
     public List<Product> getFeaturedProducts() {
         return readHandler.handleFindAllFeatured();
@@ -69,7 +69,7 @@ public class CatalogController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateProduct(
             @PathVariable UUID id,
             @RequestBody UpdateProductCommand cmd) {
@@ -77,4 +77,46 @@ public class CatalogController {
         updateHandler.handle(cmd);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/filter")
+    public ResponseEntity<PagedResult<Product>> filterProducts(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) Boolean availableOnly,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort
+    ) {
+        Page<Product> resultPage = readHandler.handleFindByFilters(
+                category,
+                maxPrice,
+                brand,
+                availableOnly,
+                page,
+                size,
+                sort
+        );
+
+        PagedResult<Product> pagedResult = new PagedResult<>(
+                resultPage.getContent(),
+                resultPage.getTotalElements(),
+                resultPage.getTotalPages(),
+                resultPage.getNumber(),
+                resultPage.getSize(),
+                resultPage.isLast()
+        );
+
+        return ResponseEntity.ok(pagedResult);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
+        deleteHandler.handle(new DeleteProductCommand(id));
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
+

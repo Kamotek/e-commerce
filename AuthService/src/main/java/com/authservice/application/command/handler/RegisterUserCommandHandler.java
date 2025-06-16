@@ -34,6 +34,7 @@ public class RegisterUserCommandHandler {
                 .firstName(command.getFirstName())
                 .lastName(command.getLastName())
                 .createdAt(Instant.now())
+                .role("USER")
                 .build();
         userRepository.save(user);
 

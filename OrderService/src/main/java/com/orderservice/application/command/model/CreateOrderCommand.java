@@ -13,19 +13,22 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class CreateOrderCommand {
-    @NotNull(message = "User ID must not be null")
+    @NotNull(message = "User ID is required")
     private UUID userId;
 
-    @Valid
-    @NotEmpty(message = "Order must contain at least one item")
+    @Valid @NotEmpty(message = "Items list cannot be empty")
     private List<CreateOrderItemCommand> items;
 
-    @NotNull(message = "Order date must not be null")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @NotNull(message = "Order date is required")
     private Instant orderDate;
+
+    private String shippingStreet;
+
+    private String shippingCity;
+
+    private String shippingPostalCode;
+
+    private String shippingCountry;
 }

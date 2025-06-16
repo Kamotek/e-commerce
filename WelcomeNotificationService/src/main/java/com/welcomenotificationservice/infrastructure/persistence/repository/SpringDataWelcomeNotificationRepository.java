@@ -6,6 +6,7 @@ import com.welcomenotificationservice.infrastructure.persistence.entity.WelcomeN
 import com.welcomenotificationservice.infrastructure.persistence.repository.WelcomeNotificationJpaRepository;
 import com.welcomenotificationservice.application.mapper.WelcomeNotificationMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class SpringDataWelcomeNotificationRepository
         implements WelcomeNotificationRepository {
 
     private final WelcomeNotificationJpaRepository jpa;
+
+    @Qualifier("welcomeNotificationMapper")
     private final WelcomeNotificationMapper mapper;
 
     @Override

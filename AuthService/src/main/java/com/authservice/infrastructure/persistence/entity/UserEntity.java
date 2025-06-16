@@ -32,6 +32,9 @@ public class UserEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column
+    private String role;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Instant.now();

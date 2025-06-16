@@ -4,6 +4,7 @@ import com.catalogservice.application.command.model.CreateProductCommand;
 import com.catalogservice.domain.model.Product;
 import com.catalogservice.domain.repository.ProductRepository;
 import com.catalogservice.infrastructure.messaging.producer.CreateProductPublisher;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,10 @@ import static com.catalogservice.util.JsonUtils.jsonToMap;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class CreateProductCommandHandler {
     private final ProductRepository productRepository;
     private final CreateProductPublisher publisher;
-
-    public CreateProductCommandHandler(ProductRepository productRepository, CreateProductPublisher publisher) {
-        this.productRepository = productRepository;
-        this.publisher = publisher;
-    }
 
     public UUID handle(CreateProductCommand cmd) {
         Product product = Product.builder()

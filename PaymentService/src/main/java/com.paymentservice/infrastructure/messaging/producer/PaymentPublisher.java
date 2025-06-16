@@ -1,6 +1,6 @@
 package com.paymentservice.infrastructure.messaging.producer;
 
-import com.paymentservice.application.command.model.PaymentSubmittedEvent;
+import com.paymentservice.application.command.model.PaymentProcessedEvent;
 import com.paymentservice.infrastructure.configuration.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +13,13 @@ import org.springframework.stereotype.Component;
 public class PaymentPublisher {
     private final RabbitTemplate tpl;
 
-    public void publish(PaymentSubmittedEvent evt) {
-        log.info("Publishing event {}", evt);
+
+    public void publishPaymentProcessed(PaymentProcessedEvent event) {
+        log.info("Publishing payment processed event: {}", event);
         tpl.convertAndSend(
                 RabbitMQConfig.PAYMENT_EXCHANGE,
-                RabbitMQConfig.PAYMENT_ROUTING_KEY,
-                evt
+                RabbitMQConfig.PAYMENT_PROCESSED_ROUTING_KEY,
+                event
         );
     }
 }

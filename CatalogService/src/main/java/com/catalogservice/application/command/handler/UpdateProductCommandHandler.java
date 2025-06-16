@@ -24,7 +24,6 @@ public class UpdateProductCommandHandler {
         Product existing = productRepository.findById(cmd.getId())
                 .orElseThrow(() -> new NoSuchElementException("Product not found: " + cmd.getId()));
 
-        // Update basic fields
         existing.setName(cmd.getName());
         existing.setDescription(cmd.getDescription());
         existing.setPrice(cmd.getPrice());
@@ -37,11 +36,9 @@ public class UpdateProductCommandHandler {
         existing.setRating(cmd.getRating());
         existing.setReviewCount(cmd.getReviewCount());
 
-        // Update structured fields from JSON
         existing.setSpecifications(JsonUtils.jsonToMap(cmd.getSpecificationsJson()));
         existing.setImageUrls(JsonUtils.jsonToList(cmd.getImageUrlsJson()));
 
-        // Publish and persist
         publisher.publish(cmd);
         productRepository.save(existing);
     }

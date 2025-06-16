@@ -5,6 +5,7 @@ import com.authservice.domain.repository.UserRepository;
 import com.authservice.infrastructure.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,8 @@ public class SpringDataUserRepository implements UserRepository {
                 user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getCreatedAt()
+                user.getCreatedAt(),
+                user.getRole()
         );
         userJpaRepository.save(entity);
     }
@@ -49,6 +51,14 @@ public class SpringDataUserRepository implements UserRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public void updateUserRole(UUID userId, String role) {
+        UserEntity userEntity = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        userEntity.setRole(role);
+    }
+
     private User toDomain(UserEntity e) {
         return User.builder()
                 .id(e.getId())
@@ -57,6 +67,7 @@ public class SpringDataUserRepository implements UserRepository {
                 .firstName(e.getFirstName())
                 .lastName(e.getLastName())
                 .createdAt(e.getCreatedAt())
+                .role(e.getRole())
                 .build();
     }
 }

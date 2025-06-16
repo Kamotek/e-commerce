@@ -16,12 +16,5 @@ public class User {
     private String firstName;
     private String lastName;
     private Instant createdAt;
-
-    public User(String email, String password, String firstName, String lastName) {
-        this.id = UUID.randomUUID();
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+    private String role;
 }
