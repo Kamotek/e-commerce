@@ -9,6 +9,7 @@ import feign.FeignException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,67 +24,90 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthServiceClient authClient;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(
+    public ResponseEntity<?> register(
             @Valid @RequestBody RegisterUserCommand cmd
     ) {
         try {
-            ResponseEntity<String> resp = authClient.register(cmd);
-            return ResponseEntity
-                    .status(resp.getStatusCode())
-                    .build();
-        } catch (FeignException.Unauthorized ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return authClient.register(cmd);
+        } catch (FeignException e) {
+            log.error("Feign call to register failed: status={}, body={}", e.status(), e.contentUTF8(), e);
+            return ResponseEntity.status(e.status()).body(e.contentUTF8());
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(
+    public ResponseEntity<?> login(
             @Valid @RequestBody LoginUserCommand cmd,
             HttpServletResponse servletResponse
     ) {
-        ResponseEntity<Map<String, Object>> resp = authClient.login(cmd);
+        try {
+            ResponseEntity<Map<String, Object>> resp = authClient.login(cmd);
 
-        List<String> setCookie = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
-        if (setCookie != null) {
-            setCookie.forEach(cookie -> servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie));
+            List<String> setCookie = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
+            if (setCookie != null) {
+                setCookie.forEach(cookie -> servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie));
+            }
+
+            return ResponseEntity
+                    .status(resp.getStatusCode())
+                    .body(resp.getBody());
+        } catch (FeignException e) {
+            log.error("Feign call to login failed: status={}, body={}", e.status(), e.contentUTF8(), e);
+            return ResponseEntity.status(e.status()).body(e.contentUTF8());
         }
-
-        return ResponseEntity
-                .status(resp.getStatusCode())
-                .body(resp.getBody());
     }
 
     @GetMapping("/allUsers")
     public ResponseEntity<List<AggregatedUser>> getAllUsers() {
-        ResponseEntity<List<AggregatedUser>> resp = authClient.getAllUsers();
-        return ResponseEntity
-                .status(resp.getStatusCode())
-                .body(resp.getBody());
+        try {
+            return authClient.getAllUsers();
+        } catch (FeignException e) {
+            log.error("Feign call to getAllUsers failed: status={}", e.status(), e);
+            return ResponseEntity.status(e.status() > 0 ? e.status() : 503).build();
+        }
+    }
+
+    @PutMapping("/users/{id}/set-admin")
+    public ResponseEntity<Void> setAdminRole(@PathVariable("id") String id) {
+        try {
+            return authClient.setAdmin(id);
+        } catch(FeignException e) {
+            log.error("Feign call to setAdmin for id {} failed: status={}", id, e.status(), e);
+
+            int status = e.status() > 0 ? e.status() : HttpStatus.SERVICE_UNAVAILABLE.value();
+            return ResponseEntity.status(status).build();
+        }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, Object>> logout(HttpServletResponse servletResponse) {
-        ResponseEntity<Map<String, Object>> resp = authClient.logout();
+    public ResponseEntity<?> logout(HttpServletResponse servletResponse) {
+        try {
+            ResponseEntity<Map<String, Object>> resp = authClient.logout();
 
-        List<String> setCookie = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
-        if (setCookie != null) {
-            setCookie.forEach(cookie -> servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie));
+            List<String> setCookie = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
+            if (setCookie != null) {
+                setCookie.forEach(cookie -> servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie));
+            }
+
+            return ResponseEntity
+                    .status(resp.getStatusCode())
+                    .body(resp.getBody());
+        } catch (FeignException e) {
+            log.error("Feign call to logout failed: status={}", e.status(), e);
+            return ResponseEntity.status(e.status() > 0 ? e.status() : 503).build();
         }
-
-        return ResponseEntity
-                .status(resp.getStatusCode())
-                .body(resp.getBody());
     }
 
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         if (jwt == null) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Map<String,Object> body = Map.of(
                 "email",     jwt.getSubject(),
