@@ -1,10 +1,9 @@
-// src/main/java/com/bffservice/interfaces/rest/CatalogServiceClient.java
 package com.bffservice.interfaces.rest;
 
-import com.bffservice.application.command.model.CreateProductCommand;
+import com.bffservice.application.command.model.CatalogServiceCreateProductCommand;
 import com.bffservice.application.command.model.UpdateProductCommand;
-import com.bffservice.domain.model.Product;
 import com.bffservice.domain.model.PagedResult;
+import com.bffservice.domain.model.Product;
 import com.bffservice.infrastructure.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,10 @@ import java.util.UUID;
 public interface CatalogServiceClient {
 
     @PostMapping("/catalog/products")
-    ResponseEntity<UUID> createProduct(@RequestBody CreateProductCommand cmd);
+    ResponseEntity<UUID> createProduct(@RequestBody CatalogServiceCreateProductCommand cmd);
+
+    @PostMapping("/catalog/products/batch")
+    ResponseEntity<Void> createProductsBatch(@RequestBody List<CatalogServiceCreateProductCommand> cmds);
 
     @GetMapping("/catalog/products")
     ResponseEntity<List<Product>> getAllProducts();
@@ -46,7 +48,4 @@ public interface CatalogServiceClient {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, name = "sort") String sort
     );
-
-
-
 }

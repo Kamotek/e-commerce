@@ -78,7 +78,7 @@ public class AuthController {
         return ResponseEntity.ok(users);
     }
 
-    @PatchMapping("/setAdmin/{id}")
+    @PutMapping("/setAdmin/{id}")
     public ResponseEntity<?> setAdmin(@PathVariable UUID id) {
         userRepository.updateUserRole(id, "ADMIN");
         return ResponseEntity.ok().build();

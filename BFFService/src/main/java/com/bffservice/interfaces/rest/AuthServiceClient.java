@@ -6,9 +6,7 @@ import com.bffservice.domain.model.AggregatedUser;
 import com.bffservice.infrastructure.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +25,7 @@ public interface AuthServiceClient {
 
     @PostMapping("/auth/logout")
     ResponseEntity<Map<String, Object>> logout();
+
+    @PutMapping("/auth/setAdmin/{id}")
+    ResponseEntity<Void> setAdmin(@PathVariable("id") String id);
 }

@@ -1,40 +1,94 @@
-// src/main/java/com/bffservice/interfaces/rest/controller/CatalogController.java
 package com.bffservice.interfaces.rest.controller;
 
+import com.bffservice.application.command.model.CatalogServiceCreateProductCommand;
 import com.bffservice.application.command.model.CreateProductCommand;
 import com.bffservice.application.command.model.UpdateProductCommand;
-import com.bffservice.domain.model.Product;
 import com.bffservice.domain.model.PagedResult;
+import com.bffservice.domain.model.Product;
 import com.bffservice.interfaces.rest.CatalogServiceClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/catalog/products")
 @RequiredArgsConstructor
 public class CatalogController {
 
     private final CatalogServiceClient catalogClient;
+    private final ObjectMapper objectMapper;
 
     @PostMapping
     public ResponseEntity<UUID> createProduct(
             @Valid @RequestBody CreateProductCommand cmd
     ) {
-        ResponseEntity<UUID> resp = catalogClient.createProduct(cmd);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(resp.getBody())
-                .toUri();
-        return ResponseEntity.created(location).body(resp.getBody());
+        try {
+            CatalogServiceCreateProductCommand feignCmd = transformToFeignCommand(cmd);
+            ResponseEntity<UUID> resp = catalogClient.createProduct(feignCmd);
+
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(resp.getBody())
+                    .toUri();
+            return ResponseEntity.created(location).body(resp.getBody());
+
+        } catch (JsonProcessingException e) {
+            log.error("Error serializing product data to JSON", e);
+            return ResponseEntity.status(500).build();
+        }
     }
+
+    @PostMapping("/batch")
+    public ResponseEntity<Void> createProductsBatch(
+            @Valid @RequestBody List<CreateProductCommand> cmds
+    ) {
+        try {
+            List<CatalogServiceCreateProductCommand> feignCmds = new ArrayList<>();
+            for (CreateProductCommand cmd : cmds) {
+                feignCmds.add(transformToFeignCommand(cmd));
+            }
+            ResponseEntity<Void> resp = catalogClient.createProductsBatch(feignCmds);
+            return ResponseEntity.status(resp.getStatusCode()).build();
+
+        } catch (JsonProcessingException e) {
+            log.error("Error serializing batch product data to JSON", e);
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+
+    private CatalogServiceCreateProductCommand transformToFeignCommand(CreateProductCommand cmd) throws JsonProcessingException {
+        String imageUrlsJson = objectMapper.writeValueAsString(cmd.getImageUrls() != null ? cmd.getImageUrls() : Collections.emptyList());
+        String specificationsJson = objectMapper.writeValueAsString(cmd.getSpecifications() != null ? cmd.getSpecifications() : Collections.emptyMap());
+
+        return CatalogServiceCreateProductCommand.builder()
+                .name(cmd.getName())
+                .description(cmd.getDescription())
+                .price(cmd.getPrice())
+                .originalPrice(cmd.getOriginalPrice())
+                .category(cmd.getCategory())
+                .inventory(cmd.getInventory())
+                .brand(cmd.getBrand())
+                .badge(cmd.getBadge())
+                .imageUrls(imageUrlsJson)
+                .specifications(specificationsJson)
+                .build();
+    }
+
 
     @GetMapping
     public ResponseEntity<List<Product>> getAll() {
