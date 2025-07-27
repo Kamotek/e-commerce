@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deployment
+  labels:
+    app: order-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+      - name: order-service
+        image: "359850485340.dkr.ecr.eu-central-1.amazonaws.com/order-service:latest"
+        ports:
+        - containerPort: 8083
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: order-db-secret
+# HealthCheck
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 15
+
+---
+# dns/ports
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service-svc
+  labels:
+    app: order-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8083
+    targetPort: 8083
+  selector:
+    app: order-service
