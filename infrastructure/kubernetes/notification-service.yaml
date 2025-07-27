@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service-deployment
+  labels:
+    app: notification-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+      - name: notification-service
+        image: "359850485340.dkr.ecr.eu-central-1.amazonaws.com/notification-service:latest"
+        ports:
+        - containerPort: 8084
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: notification-db-secret
+# HealthCheck
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 15
+
+---
+# dns/ports
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service-svc
+  labels:
+    app: notification-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8084
+    targetPort: 8084
+  selector:
+    app: notification-service

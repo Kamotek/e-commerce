@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff-service-deployment
+  labels:
+    app: bff-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bff-service
+  template:
+    metadata:
+      labels:
+        app: bff-service
+    spec:
+      containers:
+      - name: bff-service
+        image: "359850485340.dkr.ecr.eu-central-1.amazonaws.com/bff-service:latest"
+        ports:
+        - containerPort: 8085
+        # wstrzykniecie konfiguruacji z app-config i app-secrets
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-main-secrets
+            
+        # --- HEALTHCHECK ---
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8085
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8085
+          initialDelaySeconds: 30
+          periodSeconds: 15
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bff-service-svc
+  labels:
+    app: bff-service
+spec:
+  # wystwawiamy serwis na zewnatrz poprzez load balancer
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8085
+  selector:
+    app: bff-service

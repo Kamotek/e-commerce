@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  AUTH_SERVICE_DB_HOST: "__AUTH_SERVICE_DB_HOST__"
+  ORDER_SERVICE_DB_HOST: "__ORDER_SERVICE_DB_HOST__"
+  CATALOG_SERVICE_DB_HOST: "__CATALOG_SERVICE_DB_HOST__"
+  PAYMENT_SERVICE_DB_HOST: "__PAYMENT_SERVICE_DB_HOST__"
+  NOTIFICATION_SERVICE_DB_HOST: "__NOTIFICATION_SERVICE_DB_HOST__"
+  INVENTORY_SERVICE_DB_HOST: "__INVENTORY_SERVICE_DB_HOST__"
+  WELCOME_NOTIFICATION_SERVICE_DB_HOST: "__WELCOME_NOTIFICATION_SERVICE_DB_HOST__"
+  BFF_SERVICE_DB_HOST: "__BFF_SERVICE_DB_HOST__"
+  RABBITMQ_HOST: "rabbitmq-svc"
+
+  AUTH_SERVICE_URL: "http://auth-service-svc:8080"
+  CATALOG_SERVICE_URL: "http://catalog-service-svc:8081"
+  ORDER_SERVICE_URL: "http://order-service-svc:8083"
+  WELCOMENOTIFICATION_SERVICE_URL: "http://welcome-notification-service-svc:8087"
+  BFF_SERVICE_URL: "http://bff-service-svc:8085"
+  INVENTORY_SERVICE_URL: "http://inventory-service-svc:8082"
+  PAYMENT_SERVICE_URL: "http://payment-service-svc:8086"
+  NOTIFICATION_SERVICE_URL: "http://notification-service-svc:8084"
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-service-account
+  annotations:
+    eks.amazonaws.com/role-arn: "__APP_SERVICE_ACCOUNT_ROLE_ARN__"
+

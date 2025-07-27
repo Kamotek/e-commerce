@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service-deployment
+  labels:
+    app: payment-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+      - name: payment-service
+        image: "359850485340.dkr.ecr.eu-central-1.amazonaws.com/payment-service:latest"
+        ports:
+        - containerPort: 8086
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: payment-db-secret
+# HealthCheck
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8086
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8086
+          initialDelaySeconds: 30
+          periodSeconds: 15
+
+---
+# dns/ports
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service-svc
+  labels:
+    app: payment-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8086
+    targetPort: 8086
+  selector:
+    app: payment-service
