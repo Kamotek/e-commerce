@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+/**
+ * Represents register user request
+ * captures user credentials from register request
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

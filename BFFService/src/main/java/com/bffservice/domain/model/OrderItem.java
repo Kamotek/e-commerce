@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * Represents single ordered item
+ * Stored as a ListItem inside Order class
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

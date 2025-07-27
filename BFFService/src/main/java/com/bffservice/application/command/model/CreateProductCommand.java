@@ -11,6 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
+/**
+ * Represents a command received from a client to create a new product.
+ * This DTO is used in the controller layer to capture the incoming request body.
+ * It is then transformed into a {@link CatalogServiceCreateProductCommand} for internal communication.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

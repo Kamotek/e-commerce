@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
+/**
+ * Represents product with all the information about it
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

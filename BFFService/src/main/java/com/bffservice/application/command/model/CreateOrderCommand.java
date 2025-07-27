@@ -14,6 +14,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+
+/**
+ * This class represents a command to create a new order.
+ * So basically it's created when our API is called.
+ * This DTO is used to capture the necessary information from an incoming API request
+ * to create an order.
+ *
+ */
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class CreateOrderCommand {
     @NotNull(message = "User ID must not be null")

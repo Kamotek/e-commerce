@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
+/**
+ * Represents a command to update an existing product.
+ * This DTO is used to capture data from an API request to modify a product's details.
+ * The product's ID is typically provided in the URL path and set on this object in the controller.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

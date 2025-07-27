@@ -10,6 +10,11 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Represents an order within our e-commerce system.
+ * This class is a domain model that holds all information related to a single customer order,
+ * including the items purchased, shipping details, and payment status.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -9,12 +9,14 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Represents a denormalized, local view of a user.
+ */
 @Entity
 @Getter
 @NoArgsConstructor
 @Setter
 public class AggregatedUser {
-
     @Id
     private UUID id;
     private String email;

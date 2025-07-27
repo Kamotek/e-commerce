@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * This class represents single item in a list in a create order command
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
