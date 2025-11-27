@@ -1,3 +1,5 @@
+import { OrderResource } from "@/types/orders";
+
 export interface CreateOrderItemCommand {
     productId: string;
     quantity: number;
@@ -30,8 +32,9 @@ export interface Order {
     finished: boolean;
     paymentStatus: "PENDING" | "CLOSED" | "FAILED" | "PAID";
     totalAmount: number; 
-
 }
+
+
 
 const BASE_URL = process.env.NEXT_PUBLIC_BFF_URL || "http://localhost:8085/api";
 
@@ -53,11 +56,10 @@ export async function createOrder(command: CreateOrderCommand): Promise<Order> {
     return handleResponse<Order>(res);
 }
 
-export async function getOrder(orderId: string): Promise<Order> {
+
+export async function getOrder(orderId: string): Promise<OrderResource> {
     const res = await fetch(`${BASE_URL}/orders/${orderId}`, {
         credentials: "include",
     });
-    return handleResponse<Order>(res);
+    return handleResponse<OrderResource>(res);
 }
-
-

@@ -32,3 +32,24 @@ export interface Order {
     finished: boolean;
     paymentStatus: "PENDING" | "CLOSED" | "FAILED";
 }
+
+export interface OrderLink {
+    rel: string;
+    href: string;
+    method: string;
+}
+
+export interface OrderResource {
+    id: string;
+    userId: string;
+    orderDate: string;
+    shippingStreet: string;
+    shippingCity: string;
+    shippingPostalCode: string;
+    shippingCountry: string;
+    items: { productId: string; quantity: number }[];
+    paymentStatus: string;
+    finished: boolean;
+    totalAmount: number;
+    links: OrderLink[];
+}

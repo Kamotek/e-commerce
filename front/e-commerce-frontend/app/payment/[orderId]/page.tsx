@@ -1,135 +1,86 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { getOrder, Order } from "@/lib/order-api";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { getOrder } from "@/lib/order-api";
 import { processPayment } from "@/lib/payment-api";
-import { useCart } from "@/contexts/CartContext";
+import { OrderResource } from "@/types/orders";
+import OrderActions from "@/components/order-actions";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 
-export default function PaymentPage() {
-    const params = useParams();
-    const router = useRouter();
-    const { clearCart } = useCart();
-    const orderId = params.orderId as string;
+export default function PaymentOrderPage() {
+  const params = useParams();
+  const orderId = params.orderId as string;
+  const [order, setOrder] = useState<OrderResource | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [cardNumber, setCardNumber] = useState("");
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const [order, setOrder] = useState<Order | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [paymentStatus, setPaymentStatus] = useState<"PENDING" | "COMPLETED" | "FAILED">("PENDING");
-    const [cardNumber, setCardNumber] = useState("1111-2222-3333-4444");
+  useEffect(() => {
+    refreshOrder();
+  }, [orderId]);
 
-    useEffect(() => {
-        if (!orderId) {
-            setError("Order ID is missing.");
-            setIsLoading(false);
-            return;
-        }
+  const refreshOrder = () => {
+    setLoading(true);
+    getOrder(orderId).then((data) => {
+      setOrder(data);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  };
 
-        getOrder(orderId)
-            .then(data => {
-                setOrder(data);
-                if (data.paymentStatus !== 'PENDING') {
-                    setPaymentStatus(data.paymentStatus === 'CLOSED' ? 'COMPLETED' : 'FAILED');
-                }
-            })
-            .catch(() => setError("Could not find your order. Please try again."))
-            .finally(() => setIsLoading(false));
-    }, [orderId]);
-
-    const handlePayment = async () => {
-        if (!order) return;
-
-        setIsProcessing(true);
-        setError(null);
-
-        try {
-            const response = await processPayment(order.id, cardNumber);
-            setPaymentStatus(response.paymentStatus);
-            if (response.paymentStatus === 'COMPLETED') {
-                clearCart();
-            }
-        } catch (err: any) {
-            setError(err.message || "An unknown payment error occurred.");
-            setPaymentStatus("FAILED");
-        } finally {
-            setIsProcessing(false);
-        }
-    };
-
-    if (isLoading) {
-        return <div className="flex justify-center items-center h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+  const handlePayment = async () => {
+    if (!cardNumber) return;
+    setProcessing(true);
+    setError(null);
+    try {
+      await processPayment(orderId, cardNumber);
+      refreshOrder();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setProcessing(false);
     }
+  };
 
-    if (!order) {
-        return (
-            <div className="text-center mt-20 space-y-4">
-                <h1 className="text-2xl font-bold">Order Not Found</h1>
-                <p className="text-muted-foreground">{error}</p>
-                <Button onClick={() => router.push('/')}>Go to Homepage</Button>
-            </div>
-        );
-    }
+  const handleDownloadInvoice = () => {
+     window.open(`http://localhost:8085/api/invoices/${orderId}/pdf?email=user@example.com`, '_blank');
+  };
 
-    return (
-        <div className="container mx-auto px-4 py-8 max-w-2xl">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-2xl text-center">
-                        {paymentStatus === 'PENDING' && "Complete Your Payment"}
-                        {paymentStatus === 'COMPLETED' && "Payment Successful"}
-                        {paymentStatus === 'FAILED' && "Payment Failed"}
-                    </CardTitle>
-                    <p className="text-muted-foreground text-center">Order ID: {order.id}</p>
-                </CardHeader>
+  if (loading || !order) return <div>Loading...</div>;
 
-                {paymentStatus === 'PENDING' && (
-                    <>
-                        <CardContent className="space-y-6">
-                            <div className="text-4xl font-bold text-center">
-                                Total: ${order.totalAmount?.toFixed(2) ?? '0.00'}
-                            </div>
-                            <div>
-                                <Label htmlFor="card-number">Card Number (use '1111...' for guaranteed success)</Label>
-                                <Input id="card-number" value={cardNumber} onChange={e => setCardNumber(e.target.value)} placeholder="xxxx-xxxx-xxxx-xxxx" />
-                            </div>
-                            {error && <p className="text-red-500 flex items-center gap-2"><AlertCircle size={16}/>{error}</p>}
-                        </CardContent>
-                        <CardFooter>
-                            <Button className="w-full text-lg py-6" onClick={handlePayment} disabled={isProcessing}>
-                                {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Pay ${order.totalAmount?.toFixed(2) ?? '0.00'}
-                            </Button>
-                        </CardFooter>
-                    </>
-                )}
+  return (
+    <div className="max-w-xl mx-auto py-8">
+      <h2 className="text-2xl font-bold mb-4">Order #{order.id}</h2>
+      <div className="mb-2">Status: <span className="font-semibold">{order.paymentStatus}</span></div>
+      <div className="mb-2">Total: <span className="font-semibold">${order.totalAmount.toFixed(2)}</span></div>
+      <div className="mb-4">
+        <h3 className="font-bold mb-2">Items:</h3>
+        <ul>
+          {order.items.map((item, idx) => (
+            <li key={idx}>Product: {item.productId}, Quantity: {item.quantity}</li>
+          ))}
+        </ul>
+      </div>
 
-                {paymentStatus === 'COMPLETED' && (
-                    <CardContent className="text-center space-y-4 py-8">
-                        <CheckCircle className="h-20 w-20 text-green-500 mx-auto" />
-                        <h2 className="text-2xl font-bold">Thank you!</h2>
-                        <p>Your order has been confirmed and paid successfully.</p>
-                        <Button onClick={() => router.push('/')}>Continue Shopping</Button>
-                    </CardContent>
-                )}
-
-                {paymentStatus === 'FAILED' && (
-                    <CardContent className="text-center space-y-4 py-8">
-                        <XCircle className="h-20 w-20 text-red-500 mx-auto" />
-                        <h2 className="text-2xl font-bold">Something went wrong</h2>
-                        <p className="text-muted-foreground">{error || "Please try again or use a different payment method."}</p>
-                        <div className="flex gap-4 justify-center">
-                            <Button variant="outline" onClick={() => { setPaymentStatus('PENDING'); setError(null); }}>Try Again</Button>
-                            <Button onClick={() => router.push('/contact')}>Contact Support</Button>
-                        </div>
-                    </CardContent>
-                )}
-            </Card>
+      {order.paymentStatus === "PENDING" && (
+        <div className="mb-4">
+          <Label htmlFor="card">Card Number</Label>
+          <Input id="card" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} placeholder="1111-2222-3333-4444" />
+          <Button onClick={handlePayment} disabled={processing} className="mt-2">
+            {processing ? "Processing..." : "Pay Now"}
+          </Button>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
-    );
+      )}
+
+      {order.paymentStatus === "PAID" && (
+        <Button onClick={handleDownloadInvoice} className="mt-4">Download Invoice</Button>
+      )}
+
+      <OrderActions order={order} onAction={refreshOrder} />
+    </div>
+  );
 }
