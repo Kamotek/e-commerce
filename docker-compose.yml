@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:15
@@ -10,14 +8,14 @@ services:
       POSTGRES_MULTIPLE_DBS: e_commerce_auth_db,e_commerce_catalog_db,e_commerce_inventory_db,e_commerce_notification_db,e_commerce_order_db,e_commerce_payment_db,e_commerce_welcomenotification_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:z
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - e-commerce-network
 
@@ -33,20 +31,21 @@ services:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - e-commerce-network
 
   auth-service:
     build: ./AuthService
-    scale: 1
     environment:
-      - SERVER_PORT=8080
-      - DB_HOST=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_auth_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SERVER_PORT=8080
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,25 +56,27 @@ services:
 
   catalog-service:
     build: ./CatalogService
-    scale: 1
     environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_catalog_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SERVER_PORT=8081
-      - DB_HOST=postgres
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - e-commerce-network
 
-  order-service:
-    build: ./OrderService
-    scale: 1
+  inventory-service:
+    build: ./InventoryService
     environment:
-      - SERVER_PORT=8083
-      - DB_HOST=postgres
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_inventory_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SERVER_PORT=8082
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,15 +85,18 @@ services:
     networks:
       - e-commerce-network
 
-  inventory-service:
-    build: ./InventoryService
-    scale: 1
+  order-service:
+    build: ./OrderService
     environment:
-      - SERVER_PORT=8082
-      - DB_HOST=postgres
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_order_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SERVER_PORT=8083
+      - CATALOG_SERVICE_URL=http://catalog-service:8081
+
     depends_on:
       postgres:
         condition: service_healthy
@@ -103,16 +107,19 @@ services:
 
   notification-service:
     build: ./NotificationService
-    scale: 1
     environment:
-      - SERVER_PORT=8084
-      - DB_HOST=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_notification_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SPRING_MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
+      - SPRING_MAIL_PORT=${MAIL_PORT:-587}
+      - SPRING_MAIL_USERNAME=${MAIL_USERNAME}
+      - SPRING_MAIL_PASSWORD=${MAIL_PASSWORD}
       - AUTH_SERVICE_URL=http://auth-service:8080
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - SERVER_PORT=8084
     depends_on:
       postgres:
         condition: service_healthy
@@ -125,13 +132,14 @@ services:
 
   payment-service:
     build: ./PaymentService
-    scale: 1
     environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_payment_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - SERVER_PORT=8086
-      - DB_HOST=postgres
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy
@@ -142,15 +150,18 @@ services:
 
   welcome-notification-service:
     build: ./WelcomeNotificationService
-    scale: 1
     environment:
-      - SERVER_PORT=8087
-      - DB_HOST=postgres
-      - SPRING_RABBITMQ_HOST=rabbitmq # Pamiętaj, że ten serwis miał inną zmienną
-      - SPRING_RABBITMQ_USER=${RABBITMQ_USER}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/e_commerce_welcomenotification_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - SPRING_MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
+      - SPRING_MAIL_PORT=${MAIL_PORT:-587}
+      - SPRING_MAIL_USERNAME=${MAIL_USERNAME}
+      - SPRING_MAIL_PASSWORD=${MAIL_PASSWORD}
+      - SERVER_PORT=8087
     depends_on:
       postgres:
         condition: service_healthy
@@ -161,7 +172,6 @@ services:
 
   bff-service:
     build: ./BFFService
-    scale: 1
     ports:
       - "8085:8085"
     environment:
@@ -170,6 +180,7 @@ services:
       - AUTH_SERVICE_URL=http://auth-service:8080
       - CATALOG_SERVICE_URL=http://catalog-service:8081
       - ORDER_SERVICE_URL=http://order-service:8083
+      - PAYMENT_SERVICE_URL=http://payment-service:8086
     depends_on:
       - auth-service
       - catalog-service
@@ -185,6 +196,44 @@ services:
       - "80:80"
     depends_on:
       - bff-service
+    networks:
+      - e-commerce-network
+
+  health-grpc:
+    build: ./HealthGrpc
+    ports:
+      - "50052:50052"   # gRPC
+      - "8088:8088"     # HTTP JSON health endpoint
+    environment:
+      - HEALTH_GRPC_PORT=50052
+      - HEALTH_HTTP_PORT=8088
+      - HEALTH_TARGETS=http://auth-service:8080,http://catalog-service:8081,http://inventory-service:8082,http://order-service:8083,http://notification-service:8084,http://payment-service:8086,http://welcome-notification-service:8087,tcp://postgres:5432
+      - HEALTH_INTERVAL_SECONDS=10
+      - HEALTH_TIMEOUT_SECONDS=3
+    depends_on:
+      - auth-service
+      - catalog-service
+      - inventory-service
+      - order-service
+      - notification-service
+      - payment-service
+      - welcome-notification-service
+      - postgres
+    networks:
+      - e-commerce-network
+  invoice-service:
+    build: ./InvoiceService
+    environment:
+      - POSTGRES_DB=invoice_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    ports:
+      - "8090:8090"
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - e-commerce-network
 
