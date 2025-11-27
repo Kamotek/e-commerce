@@ -1,0 +1,4 @@
+spyne
+lxml
+psycopg2-binary
+reportlab
