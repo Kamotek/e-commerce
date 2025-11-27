@@ -1,0 +1,6 @@
+grpcio==1.56.0
+grpcio-tools==1.56.0
+grpcio-reflection==1.56.0
+requests==2.31.0
+fastapi==0.95.2
+uvicorn[standard]==0.22.0

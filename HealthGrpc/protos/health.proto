@@ -1,0 +1,20 @@
+syntax = "proto3";
+package health;
+
+service HealthChecker {
+  rpc Check(HealthRequest) returns (HealthResponse);
+  rpc Watch(HealthRequest) returns (stream HealthResponse);
+}
+
+message HealthRequest {
+  repeated string targets = 1;       
+  int32 timeout_seconds = 2;        
+}
+
+message HealthResponse {
+  string target = 1;
+  bool healthy = 2;
+  string detail = 3;
+  int64 rtt_ms = 4;
+  int64 timestamp = 5; 
+}
